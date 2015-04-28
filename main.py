@@ -27,10 +27,31 @@ removedchars = [
     "\x0B"
 ]
 
+# Headers
+ssl_client_verify = "Client-Verify"
+ssl_client_cert = "Client-Certificate"
+ssl_client_fingerprint = "Client-Certificate-fp"
+ssl_client_serial = "Client-Serial"
+ssl_client_s_dn = "Client-S-DN"
+ssl_client_i_dn = "Client-I-DN"
+ssl_cipher = "SSL-Cipher"
+forwarded_for = "X-Forwarded-For"
+
 
 @app.route("/")
-def hello():
-    return "Please install the JustChap app to use this service."
+def index():
+    if ssl_client_verify in request.headers:
+        if request.headers[ssl_client_verify] == "NONE":
+            return """
+            Please install the JustChap app to use this service. To play with
+            client-SSL certificates, start by <a href="/keygen">generating a key
+            """
+        if request.headers[ssl_client_verify] == "SUCCESS":
+            return redirect(url_for('headers'))
+        else:
+            return "WTF? Your cert validation was a %s" % request.headers[ssl_client_verify]
+    else:
+        return "HAXXXX (%s header not found!)" % ssl_client_verify
 
 
 @app.route("/headers")
@@ -48,8 +69,8 @@ def keygen():
         <input type="submit" value="Go" />
     </form>
     """
-    if "X-Client-Verify" in request.headers:
-        if request.headers['X-Client-Verify'] == "SUCCESS":
+    if ssl_client_verify in request.headers:
+        if request.headers[ssl_client_verify] == "SUCCESS":
             return redirect(url_for('headers'))
         else:
             return genhtml
@@ -60,8 +81,8 @@ def keygen():
 @app.route("/keysign", methods=["POST"])
 def keysign():
     response = make_response("Whoops, no pubkey specified!")
-    if "X-Client-Verify" in request.headers:
-        if "pubkey" in request.form and request.headers['X-Client-Verify'] == "NONE":
+    if ssl_client_verify in request.headers:
+        if "pubkey" in request.form and request.headers[ssl_client_verify] == "NONE":
             pubkey = "SPKAC="
             spkac = request.form['pubkey']
             for char in removedchars:
