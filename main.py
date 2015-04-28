@@ -38,6 +38,11 @@ ssl_cipher = "SSL-Cipher"
 forwarded_for = "X-Forwarded-For"
 
 
+@app.route("/headers")
+def headers():
+    return jsonify(request.headers)
+
+
 @app.route("/")
 def index():
     if ssl_client_verify in request.headers:
@@ -47,16 +52,11 @@ def index():
             client-SSL certificates, start by <a href="/keygen">generating a key
             """
         if request.headers[ssl_client_verify] == "SUCCESS":
-            return redirect(url_for('headers'))
+            return redirect(url_for('headers', _scheme="https", _external=True))
         else:
             return "WTF? Your cert validation was a %s" % request.headers[ssl_client_verify]
     else:
         return "HAXXXX (%s header not found!)" % ssl_client_verify
-
-
-@app.route("/headers")
-def headers():
-    return jsonify(request.headers)
 
 
 @app.route("/keygen")
@@ -71,7 +71,7 @@ def keygen():
     """
     if ssl_client_verify in request.headers:
         if request.headers[ssl_client_verify] == "SUCCESS":
-            return redirect(url_for('headers'))
+            return redirect(url_for('headers', _scheme="https", _external=True))
         else:
             return genhtml
     else:
