@@ -67,7 +67,9 @@ def keygen():
         <label for="CN">Name:</label> <input type="text" name="CN" /><br />
         Cert: <keygen name="pubkey" challange="stuff" keytype="RSA"><br />
         <input type="submit" value="Go" />
-    </form>
+    </form><br /><br />
+
+    <i>After your certificate is installed, <a href="/">click here</a></i>
     """
     if ssl_client_verify in request.headers:
         if request.headers[ssl_client_verify] == "SUCCESS":
