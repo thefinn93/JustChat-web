@@ -15,12 +15,12 @@ import java.net.InetAddress;
 
 /**
  *
- * @author FryedMan
+ * @author Brad Minogue
  */
 class GitHandler implements HttpHandler {
     
     private static final String GIT_SOURCE = 
-            "https://github.com/minogb/JustChat-web.git";
+            "https://github.com/thefinn93/JustChat-web.git";
 
     public GitHandler() {
     }
