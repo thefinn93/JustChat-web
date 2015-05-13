@@ -10,11 +10,10 @@ import java.net.InetSocketAddress;
  * @author Brad Minogue
  */
 public class JavaServer {
-    private static  String[] contextList = {"/", "/git", "/hax"};
+    private static  String[] contextList = {"/", "/git"};
     private static HttpHandler[] contextHandlerList = {
         new IndexHandler(),
-        new GitHandler(),
-        new HaxHandler()  // This is basically just finn dicking around with Java
+        new GitHandler()
     };
     /**
      * @param args Pass in desired port, otherwise it uses port 5673
