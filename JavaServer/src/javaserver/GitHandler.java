@@ -13,10 +13,7 @@ import java.net.InetAddress;
  * @author Brad Minogue
  */
 class GitHandler implements HttpHandler {
-    
-    private static final String GIT_SOURCE = 
-            "https://github.com/thefinn93/JustChat-web.git";
-
+  
     public GitHandler() {
     }
     /**
@@ -34,7 +31,7 @@ class GitHandler implements HttpHandler {
             try
             {
                 Process responceFromCommand = Runtime.getRuntime().exec(
-                        "git pull " + GIT_SOURCE);
+                        "git pull");
                 response = outPutProccessOutput(responceFromCommand);
             }
             catch(Exception e)
@@ -50,7 +47,7 @@ class GitHandler implements HttpHandler {
     /**
      * Prints out response from executing command
      * @param inputSource response from executing command
-     * @throws IOException 
+     * @throws IOException
      */
     private String outPutProccessOutput(Process inputSource) throws IOException
     {
@@ -71,5 +68,5 @@ class GitHandler implements HttpHandler {
         }
         return retVal;
     }
-    
+
 }
