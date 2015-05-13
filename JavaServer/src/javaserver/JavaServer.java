@@ -5,15 +5,16 @@ import com.sun.net.httpserver.*;
 import java.net.InetSocketAddress;
 
 /**
- * JavaServer is a server used for JustChat application for andriod and 
+ * JavaServer is a server used for JustChat application for andriod and
  * processes requests
  * @author Brad Minogue
  */
 public class JavaServer {
-    private static  String[] contextList = {"/","/git"};
+    private static  String[] contextList = {"/", "/git", "/hax"};
     private static HttpHandler[] contextHandlerList = {
         new IndexHandler(),
-        new GitHandler()
+        new GitHandler(),
+        new HaxHandler()  // This is basically just finn dicking around with Java
     };
     /**
      * @param args Pass in desired port, otherwise it uses port 5673
@@ -31,7 +32,7 @@ public class JavaServer {
                 System.out.println(nfe);
             }
         }
-        HttpServer server = 
+        HttpServer server =
                 HttpServer.create(new InetSocketAddress(socketPort),0);
         //Create pages to listen on and handling
         for(int i = 0; i < contextList.length; i++)
