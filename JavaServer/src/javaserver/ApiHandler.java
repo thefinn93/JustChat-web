@@ -18,13 +18,16 @@ public class ApiHandler implements HttpHandler{
     @Override
     public void handle(HttpExchange he) throws IOException {
         Headers header = he.getRequestHeaders();
-        String response = "Unsupported Api";
-        Set values = header.keySet();
+        String response = "Partly supported Api";
         try{
             Set<Map.Entry<String, List<String>>> params = he.getRequestHeaders().entrySet();
             JSONArray array = new JSONArray();
-            array.add(params);
-            response += "\n" + array.toJSONString().toString();
+            JSONObject obj = new JSONObject();
+            for(Map.Entry<String, List<String>> part : params)
+            {
+                obj.putIfAbsent(part.getKey(), part.getValue());
+            }
+            response += obj.toString();
         }
         catch(Exception e)
         {
