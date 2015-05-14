@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="Project Builder" default="default" basedir=".">
+    <description>Builds the project.</description>
+<ant antfile="./nbproject/build-impl.xml"/>
+<ant antfile="./build.xml"/>
+</project>

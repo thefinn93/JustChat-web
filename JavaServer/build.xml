@@ -9,7 +9,6 @@
 <!-- in the project's Project Properties dialog box.-->
 <project name="JavaServer" default="default" basedir=".">
     <description>Builds, tests, and runs the project JavaServer.</description>
-<ant antfile="./nbproject/build-impl.xml"/>
 		<get dest="./build/json-simple-1.1.1.jar" usetimestamp="true">
 			<url url="http://json-simple.googlecode.com/files/json-simple-1.1.1.jar"/>
 		</get>
