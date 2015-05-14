@@ -20,12 +20,11 @@ public class ApiHandler implements HttpHandler{
         Headers header = he.getRequestHeaders();
         String response = "Unsupported Api";
         Set values = header.keySet();
-        String[] array;
-        //values.toArray(array);
         try{
             Set<Map.Entry<String, List<String>>> params = he.getRequestHeaders().entrySet();
-            response += "\n" + params.toString();
-            
+            JSONArray array = new JSONArray();
+            array.add(params);
+            response += "\n" + array.toJSONString().toString();
         }
         catch(Exception e)
         {
