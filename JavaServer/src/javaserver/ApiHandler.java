@@ -6,6 +6,7 @@ import com.sun.net.httpserver.HttpHandler;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 /**
@@ -21,8 +22,9 @@ public class ApiHandler implements HttpHandler{
         String[] array;
         //values.toArray(array);
         try{
-        Map<String, String> params = queryToMap(he.getRequestURI().getQuery()); 
-        response += "param A=" + params.get("A");
+            Set<Map.Entry<String, List<String>>> params = he.getRequestHeaders().entrySet();
+            response += "\n" + params.toString();
+            
         }
         catch(Exception e)
         {
@@ -33,17 +35,5 @@ public class ApiHandler implements HttpHandler{
         oout.write(response.getBytes());
         oout.close();
         
-    }
-    public Map<String, String> queryToMap(String query){
-        Map<String, String> result = new HashMap<String, String>();
-        for (String param : query.split("&")) {
-            String pair[] = param.split("=");
-            if (pair.length>1) {
-                result.put(pair[0], pair[1]);
-            }else{
-                result.put(pair[0], "");
-            }
-        }
-        return result;
     }
 }
