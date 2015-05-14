@@ -25,7 +25,8 @@ public class ApiHandler implements HttpHandler{
             JSONObject obj = new JSONObject();
             for(Map.Entry<String, List<String>> part : params)
             {
-                obj.putIfAbsent(part.getKey(), part.getValue());
+                obj.put(part.getKey(), part.getValue());
+              //  obj.putIfAbsent(part.getKey(), part.getValue());
             }
             response += obj.toString();
         }
