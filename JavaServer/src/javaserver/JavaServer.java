@@ -2,6 +2,7 @@ package javaserver;
 
 import java.io.IOException;
 import com.sun.net.httpserver.*;
+import java.net.InetAddress;
 import java.net.InetSocketAddress;
 
 /**
@@ -31,8 +32,9 @@ public class JavaServer {
                 System.out.println(nfe);
             }
         }
-        HttpServer server =
-                HttpServer.create(new InetSocketAddress(socketPort),0);
+        HttpServer server = HttpServer.create(
+                new InetSocketAddress(InetAddress.getLoopbackAddress(),socketPort),0);
+        //server.bind(null, socketPort);
         //Create pages to listen on and handling
         for(int i = 0; i < contextList.length; i++)
         {
