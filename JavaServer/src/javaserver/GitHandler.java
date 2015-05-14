@@ -23,21 +23,16 @@ class GitHandler implements HttpHandler {
      */
     @Override
     public void handle(HttpExchange he) throws IOException {
-        String response = "Fuck off";
-        InetAddress tempAddr = he.getRemoteAddress().getAddress();
-        if(tempAddr.isLoopbackAddress() || tempAddr.isAnyLocalAddress())
+        String response;
+        try
         {
-            response = "welcome";
-            try
-            {
-                Process responceFromCommand = Runtime.getRuntime().exec(
-                        "git pull");
-                response = outPutProccessOutput(responceFromCommand);
-            }
-            catch(Exception e)
-            {
-                response = e.toString();
-            }
+            Process responceFromCommand = Runtime.getRuntime().exec(
+                    "git pull");
+            response = outPutProccessOutput(responceFromCommand);
+        }
+        catch(Exception e)
+        {
+            response = e.toString();
         }
         he.sendResponseHeaders(200, response.length());
         OutputStream oout = he.getResponseBody();
