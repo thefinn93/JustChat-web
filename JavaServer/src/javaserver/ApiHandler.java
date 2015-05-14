@@ -18,17 +18,37 @@ public class ApiHandler implements HttpHandler{
     @Override
     public void handle(HttpExchange he) throws IOException {
         Headers header = he.getRequestHeaders();
-        String response = "Partly supported Api";
+        String response = "";
         try{
             Set<Map.Entry<String, List<String>>> params = he.getRequestHeaders().entrySet();
-            JSONArray array = new JSONArray();
             JSONObject obj = new JSONObject();
             for(Map.Entry<String, List<String>> part : params)
             {
                 obj.put(part.getKey(), part.getValue());
-              //  obj.putIfAbsent(part.getKey(), part.getValue());
             }
-            response += obj.toString();
+            if(obj.containsKey("Client-Verify"))
+            {
+                List values = (List) obj.get("Client-Verify");
+                if(!values.contains("SUCCESS"))
+                {
+                    response = 
+                        "Please install the JustChap app to use this service."
+                            +" To play with client-SSL certificates, start"
+                            + "by <a href=\"/keygen\">generating a key";
+                }
+                else if (values.contains("SUCCESS"))
+                {
+                    response = "Contains ssl";
+                }
+                else
+                {
+                    response = "???";
+                }
+            }
+            else
+            {
+                response += obj.toString();
+            }
         }
         catch(Exception e)
         {
