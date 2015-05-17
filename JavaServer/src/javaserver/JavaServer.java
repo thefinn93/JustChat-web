@@ -21,7 +21,7 @@ public class JavaServer {
      * @param args Pass in desired port, otherwise it uses port 5673
      */
     public static void main(String[] args) {
-        System.out.println(Definitions.WAKEUP_MESSAGE);
+        //System.out.println(Definitions.WAKEUP_MESSAGE);
         int socketPort = 5673;
         if(args.length > 0)
         {
@@ -56,7 +56,7 @@ public class JavaServer {
             if(server == null)
                 System.out.println("ERROR");
             else
-                System.out.println(Definitions.GOOD_STARTUP_MESSAGE);
+                //System.out.println(Definitions.GOOD_STARTUP_MESSAGE);
         }
     }
 }
