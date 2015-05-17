@@ -56,7 +56,9 @@ public class JavaServer {
             if(server == null)
                 System.out.println("ERROR");
             else
+            {
                 //System.out.println(Definitions.GOOD_STARTUP_MESSAGE);
+            }
         }
     }
 }
