@@ -15,7 +15,7 @@
 			</fileset>
 		</classpath>
 	</javac>
-	<jar destfile="./dist/JavaServer.jar" basedir="./build/classes">
+	<jar destfile="./dist/JustChatServer.jar" basedir="./build/classes">
         	<zipfileset src="./build/json-simple-1.1.1.jar" excludes="META-INF/*" />
 		<manifest>
 			<attribute name="Class-Path" value="./build/json-simple-1.1.1.jar"/>
