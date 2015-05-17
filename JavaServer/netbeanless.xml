@@ -2,6 +2,7 @@
 <project name="Project Builder">
     <description>Builds the project.</description>
 	<mkdir dir="./build/classes/"/>
+	<mkdir dir="./dist/"/>
 	<get dest="./build/json-simple-1.1.1.jar" usetimestamp="true">
 		<url url="http://json-simple.googlecode.com/files/json-simple-1.1.1.jar"/>
 	</get>
@@ -14,7 +15,7 @@
 			</fileset>
 		</classpath>
 	</javac>
-	<jar destfile="./build/JavaServer.jar" basedir="./build/classes">
+	<jar destfile="./dist/JavaServer.jar" basedir="./build/classes">
         	<zipfileset src="./build/json-simple-1.1.1.jar" excludes="META-INF/*" />
 		<manifest>
 			<attribute name="Class-Path" value="./build/json-simple-1.1.1.jar"/>
