@@ -11,8 +11,8 @@ import java.net.InetSocketAddress;
  * @author Brad Minogue
  */
 public class JavaServer {
-    private static  String[] contextList = {"/", "/git","/api"};
-    private static HttpHandler[] contextHandlerList = {
+    private static final  String[] contextList = {"/", "/git","/api"};
+    private static final HttpHandler[] contextHandlerList = {
         new IndexHandler(),
         new GitHandler(),
         new ApiHandler()
@@ -20,7 +20,8 @@ public class JavaServer {
     /**
      * @param args Pass in desired port, otherwise it uses port 5673
      */
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) {
+        System.out.println(Definitions.WAKEUP_MESSAGE);
         int socketPort = 5673;
         if(args.length > 0)
         {
@@ -33,15 +34,29 @@ public class JavaServer {
                 System.out.println(nfe);
             }
         }
-        HttpServer server = HttpServer.create(
-                new InetSocketAddress(InetAddress.getLoopbackAddress(),socketPort),0);
-        //server.bind(null, socketPort);
-        //Create pages to listen on and handling
-        for(int i = 0; i < contextList.length; i++)
+        HttpServer server = null;
+        try
         {
-            server.createContext(contextList[i], contextHandlerList[i]);
+            server = HttpServer.create(
+                    new InetSocketAddress(InetAddress.getLoopbackAddress(),
+                        socketPort),0);
+            for(int i = 0; i < contextList.length; i++)
+            {
+                server.createContext(contextList[i], contextHandlerList[i]);
+            }
+            server.setExecutor(null);
+            server.start();
         }
-        server.setExecutor(null);
-        server.start();
+        catch(IOException ioe)
+        {
+            System.out.println(ioe);
+        }
+        finally
+        {
+            if(server == null)
+                System.out.println("ERROR");
+            else
+                System.out.println(Definitions.GOOD_STARTUP_MESSAGE);
+        }
     }
 }
