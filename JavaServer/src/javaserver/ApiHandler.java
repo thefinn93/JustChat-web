@@ -14,7 +14,6 @@ import org.json.simple.*;
  * @author Brad Minogue
  */
 public class ApiHandler implements HttpHandler{
-
     @Override
     public void handle(HttpExchange he) throws IOException {
         Headers header = he.getRequestHeaders();
@@ -26,38 +25,15 @@ public class ApiHandler implements HttpHandler{
             {
                 obj.put(part.getKey(), part.getValue());
             }
-            if(obj.containsKey("Client-Verify"))
-            {
-                List values = (List) obj.get("Client-Verify");
-                if(!values.contains("SUCCESS"))
-                {
-                    response = 
-                        "Please install the JustChap app to use this service."
-                            +" To play with client-SSL certificates, start"
-                            + "by <a href=\"/keygen\">generating a key";
-                }
-                else if (values.contains("SUCCESS"))
-                {
-                    response = "Contains ssl";
-                }
-                else
-                {
-                    response = "???";
-                }
-            }
-            else
-            {
-                response += obj.toString();
-            }
+            response += obj.toString();
         }
         catch(Exception e)
         {
-            response += "\n" + e.toString();
+            response = e.toString();
         }
         he.sendResponseHeaders(200, response.length());
         OutputStream oout = he.getResponseBody();
         oout.write(response.getBytes());
         oout.close();
-        
     }
 }
