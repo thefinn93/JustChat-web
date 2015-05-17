@@ -14,11 +14,7 @@ echo "/j #justchat" > /home/admin/spambot/chat.freenode.net/in
 cd /usr/local/src/JustChat-web/JavaServer
 
 
-# Netbeans pre-build bullshit
-ant -f nbproject/build-impl.xml 2>&1 | curl -F 'sprunge=<-' http://sprunge.us > /tmp/channelspam
-
-# Actual build
-ant -v 2>&1 | curl -F 'sprunge=<-' http://sprunge.us > /tmp/channelspam
+ant -f netbeanless.xml 2>&1 | curl -F 'sprunge=<-' http://sprunge.us > /tmp/channelspam
 
 # Finally, restart the server so the changes get executed
 supervisorctl restart javaserver
