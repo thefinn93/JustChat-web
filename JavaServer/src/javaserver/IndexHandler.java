@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package javaserver;
 
 import com.sun.net.httpserver.Headers;
@@ -15,15 +10,17 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import org.json.simple.JSONObject;
+import org.json.simple.*;
 
 /**
  *
- * @author FryedMan
+ * @author Brad Minogue
  */
 public class IndexHandler  implements HttpHandler{
     @Override
     public void handle(HttpExchange he) throws IOException {
+        //a catch all response for anything but the pages we are already
+        //handling and for the index
         if(!he.getRequestURI().getPath().endsWith("/"))
         {
             new PageNotFoundHandler().handle(he);
@@ -32,16 +29,23 @@ public class IndexHandler  implements HttpHandler{
         Headers header = he.getRequestHeaders();
         String response = Definitions.S_HTML;
         try{
-            Set<Map.Entry<String, List<String>>> params = he.getRequestHeaders().entrySet();
+            //Add all of the headers to a JSONObject
+            Set<Map.Entry<String, List<String>>> params = 
+                    he.getRequestHeaders().entrySet();
             JSONObject obj = new JSONObject();
             for(Map.Entry<String, List<String>> part : params)
             {
-                obj.put(part.getKey(), part.getValue());
+                //For every value can contain an array of subvalues/keys
+                JSONArray subValue = new JSONArray();
+                subValue.add(part.getValue().toString());
+                obj.put(part.getKey(), subValue);
             }
+            //print out the header in json format
             response += obj.toString() + Definitions.ENDL;
             boolean hasSsl = checkSsl(obj);
             if(!hasSsl)
             {
+                //ask the user to generate a key
                 response += Definitions.ENDL + 
                     "Please install the JustChap app to use this service."
                         +" To play with client-SSL certificates, start"
@@ -49,13 +53,14 @@ public class IndexHandler  implements HttpHandler{
             }
             else if (hasSsl)
             {
-                response = "Contains ssl";
+                response += "Contains ssl";
             }
         }
         catch(Exception e)
         {
             response += Definitions.ENDL + e.toString();
         }
+        //send back response
         response += Definitions.E_HTML;
         he.sendResponseHeaders(200, response.length());
         OutputStream oout = he.getResponseBody();
@@ -67,8 +72,9 @@ public class IndexHandler  implements HttpHandler{
         boolean retVal =  false;
         if(obj.containsKey("Client-Verify"))
         {
-            LinkedList values = (LinkedList) obj.get("Client-Verify");
-            retVal = values != null && !values.contains("SUCCESS");
+            JSONArray values = (JSONArray) obj.get("Client-Verify");
+            String subValues = (String) values.get(0);
+            retVal = values != null && subValues.equalsIgnoreCase("[SUCCESS]");
         }
         return retVal;
     }
