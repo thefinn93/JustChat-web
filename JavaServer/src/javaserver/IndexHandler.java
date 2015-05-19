@@ -40,8 +40,6 @@ public class IndexHandler  implements HttpHandler{
                 subValue.add(part.getValue().toString());
                 obj.put(part.getKey(), subValue);
             }
-            //print out the header in json format
-            response += obj.toString() + Definitions.ENDL;
             boolean hasSsl = checkSsl(obj);
             if(!hasSsl)
             {
