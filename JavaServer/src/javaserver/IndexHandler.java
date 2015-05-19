@@ -11,6 +11,7 @@ import com.sun.net.httpserver.HttpHandler;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.InetAddress;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -66,7 +67,7 @@ public class IndexHandler  implements HttpHandler{
         boolean retVal =  false;
         if(obj.containsKey("Client-Verify"))
         {
-            List values =(List)obj.get("Client-Verify");
+            LinkedList values = (LinkedList) obj.get("Client-Verify");
             retVal = values != null && !values.contains("SUCCESS");
         }
         return retVal;
