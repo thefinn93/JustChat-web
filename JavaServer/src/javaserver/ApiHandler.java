@@ -7,12 +7,14 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.io.PrintWriter;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import org.json.simple.*;
 /**
+ * This class handles all api input
  * @author Brad Minogue
  */
 public class ApiHandler implements HttpHandler{
@@ -30,8 +32,9 @@ public class ApiHandler implements HttpHandler{
             {
                 obj = new JSONObject();
                 obj.put("success", false);
-                obj.put("reason", "Internal");
+                obj.put("reason", Definitions.NO_API_INPUT);
                 response += obj.toString();
+                System.out.println(Definitions.NO_API_INPUT);
             }
         }
         catch(Exception e)
@@ -43,6 +46,11 @@ public class ApiHandler implements HttpHandler{
         oout.write(response.getBytes());
         oout.close();
     }
+    /**
+     * This function switches to the aproriate function based on action
+     * @param obj
+     * @return 
+     */
     public JSONObject switchAction(JSONObject obj)
     {
         JSONObject retVal = new JSONObject();
@@ -50,7 +58,7 @@ public class ApiHandler implements HttpHandler{
         {
             retVal.put("success", false);
             retVal.put("reason", "Bad Input");;
-            System.out.println("No action");
+            System.out.println(Definitions.BAD_OR_NO_ACTION_INPUT);
             return retVal;
         }
         switch((String)obj.get("action"))
@@ -59,10 +67,17 @@ public class ApiHandler implements HttpHandler{
                 retVal = runRegister(obj);
                 break;
             default:
+                retVal.put("successs", false);
+                retVal.put("reason", Definitions.BAD_OR_NO_ACTION_INPUT);
                 break;
         }
         return retVal;
     }
+    /**
+     * Run the register action
+     * @param obj containing the json data 
+     * @return success condition and necisary data in json format
+     */
     public JSONObject runRegister(JSONObject obj)
     {
         JSONObject retVal = new JSONObject();
@@ -71,23 +86,24 @@ public class ApiHandler implements HttpHandler{
         {
             retVal.put("success", false);
             retVal.put("reason", "Bad Input");
-            System.out.println("No CN/csr");
+            System.out.println(Definitions.BAD_CSR_CN_API_INPUT);
             return retVal;
         }
         String userName = (String)obj.get("CN");
         convertToAlpha(userName);
         try
         {
-            Process responceFromCommand = Runtime.getRuntime().exec(
+            Process command = Runtime.getRuntime().exec(
                     "openssl ca -keyfile /etc/ssl/ca/ca.key "
                             +"-cert /etc/ssl/ca/ca.crt -extensions usr_cert "
                             +"-notext -md sha256 -in /tmp/1432063090.pem -subj "
                             +"'/countryName=US/stateOrProvinceName=Washington/"
                             +"localityName=Bothell/organizationName=JustChat "
                             + "Enterprises/commonName="+ userName+"'");
-            
+            PrintWriter pw = new PrintWriter(command.getOutputStream());
+            pw.print((String)obj.get("csr"));
             retVal.put("success", true);
-            String cert = outPutProccessOutput(responceFromCommand);
+            String cert = outPutProccessOutput(command);
             retVal.put("cert", cert);
             retVal.put("CN", userName);
         }
@@ -99,7 +115,7 @@ public class ApiHandler implements HttpHandler{
         }
         return retVal;
     }
-    public String convertToAlpha(String test)
+    private String convertToAlpha(String test)
     {
         String retVal = "";
         for(int i = 0; i < test.length(); i++)
@@ -111,7 +127,7 @@ public class ApiHandler implements HttpHandler{
         }
         return retVal;
     }
-    public boolean isCharAlphaNum(char test)
+    private boolean isCharAlphaNum(char test)
     {
         return Character.isLetter(test) || Character.isDigit(test);
     }
