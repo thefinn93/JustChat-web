@@ -38,7 +38,8 @@ public class ApiHandler implements HttpHandler{
         if(!obj.containsKey("action"))
         {
             retVal.put("success", false);
-            retVal.put("reason", "bad input");
+            retVal.put("reason", "Bad Input");;
+            System.out.println("No action");
             return retVal;
         }
         switch((String)obj.get("action"))
@@ -58,7 +59,8 @@ public class ApiHandler implements HttpHandler{
         if(flag)
         {
             retVal.put("success", false);
-            retVal.put("reason", "bad input");
+            retVal.put("reason", "Bad Input");
+            System.out.println("No CN/csr");
             return retVal;
         }
         String userName = (String)obj.get("CN");
@@ -72,6 +74,7 @@ public class ApiHandler implements HttpHandler{
                             +"'/countryName=US/stateOrProvinceName=Washington/"
                             +"localityName=Bothell/organizationName=JustChat "
                             + "Enterprises/commonName="+ userName+"'");
+            
             retVal.put("success", true);
             String cert = outPutProccessOutput(responceFromCommand);
             retVal.put("cert", cert);
