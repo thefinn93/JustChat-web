@@ -1,7 +1,10 @@
 package javaserver;
 
 import com.sun.net.httpserver.Headers;
+import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -35,8 +38,25 @@ public class JSONHelper {
         JSONObject obj = new JSONObject();
         JSONParser parser = new JSONParser();
         Object o = null;
+        BufferedReader br = new BufferedReader(new InputStreamReader(body));
+        StringBuilder sb = new StringBuilder();
+        String line = "";
         try {
-            o  = parser.parse(body.toString());
+            while((line = br.readLine()) != null)
+            {
+                sb.append(line);
+            }
+        } catch (IOException ex) {
+        }
+        finally{
+            if(br != null)
+                try {
+                    br.close();
+            } catch (IOException ex) {
+             }
+        }
+        try {
+            o  = parser.parse(sb.toString());
         } catch (ParseException ex) {
         }
         return (JSONObject)o;

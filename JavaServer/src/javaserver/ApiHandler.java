@@ -26,6 +26,13 @@ public class ApiHandler implements HttpHandler{
             {
                 response += switchAction(obj).toString();
             }
+            else
+            {
+                obj = new JSONObject();
+                obj.put("success", false);
+                obj.put("reason", "Internal");
+                response += obj.toString();
+            }
         }
         catch(Exception e)
         {
