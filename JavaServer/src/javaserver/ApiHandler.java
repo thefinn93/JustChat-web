@@ -67,7 +67,7 @@ public class ApiHandler implements HttpHandler{
     {
         JSONObject retVal = new JSONObject();
         boolean flag = obj.containsKey("CN") && obj.containsKey("csr");
-        if(flag)
+        if(!flag)
         {
             retVal.put("success", false);
             retVal.put("reason", "Bad Input");
