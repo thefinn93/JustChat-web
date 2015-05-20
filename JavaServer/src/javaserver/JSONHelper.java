@@ -1,12 +1,17 @@
 package javaserver;
 
 import com.sun.net.httpserver.Headers;
+import java.io.InputStream;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 
 /**
  * @author Brad Minogue
@@ -24,6 +29,17 @@ public class JSONHelper {
             obj.put(part.getKey(), subValue);
         }
         return obj;
+    }
+    public static JSONObject convertToJson(InputStream body)
+    {
+        JSONObject obj = new JSONObject();
+        JSONParser parser = new JSONParser();
+        Object o = null;
+        try {
+            o  = parser.parse(body.toString());
+        } catch (ParseException ex) {
+        }
+        return (JSONObject)o;
     }
     public static JSONObject convertToJson(Headers h)
     {

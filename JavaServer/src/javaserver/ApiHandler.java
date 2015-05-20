@@ -21,14 +21,11 @@ public class ApiHandler implements HttpHandler{
         Headers header = he.getRequestHeaders();
         String response = "";
         try{
-            Set<Map.Entry<String, List<String>>> params = 
-                    header.entrySet();
-            for(Map.Entry<String, List<String>> part : params)
+            JSONObject obj = JSONHelper.convertToJson(he.getRequestBody());
+            if(obj != null)
             {
-                //For every value can contain an array of subvalues/keys
-                System.out.println(part.getKey());
+                response += switchAction(obj).toString();
             }
-            response += switchAction(JSONHelper.convertToJson(header)).toString();
         }
         catch(Exception e)
         {
