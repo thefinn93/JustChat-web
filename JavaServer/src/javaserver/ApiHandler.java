@@ -115,19 +115,31 @@ public class ApiHandler implements HttpHandler{
             "/countryName=US/stateOrProvinceName=Washington/localityName="
                     +"Bothell/organizationName=JustChat/JustChat "
                     +"Enterprises/commonName="+ userName};
-            Process command = Runtime.getRuntime().exec(commandList);
-            //PrintWriter pw = new PrintWriter(command.getOutputStream());
-            //pw.print((String)obj.get("csr"));
-            //command.waitFor();
-            int extValue = 0;
-            /*
+            Process command = Runtime.getRuntime().exec( "openssl ca -keyfile /etc/ssl/ca/ca.key "
+                            +"-cert /etc/ssl/ca/ca.crt -extensions usr_cert "
+                            +"-notext -md sha256 -in /tmp/1432063090.pem -subj "
+                            +"/countryName=US/stateOrProvinceName=Washington/"
+                            +"localityName=Bothell/organizationName=JustChat "
+                            + "Enterprises/commonName="+ userName+"");
+            PrintWriter pw = new PrintWriter(command.getOutputStream());
+            pw.print((String)obj.get("csr"));
+            try
+            {
+                command.waitFor();
+            }
+            catch(Exception e)
+            {
+                System.out.println("failed to wait for openssl");
+            }
+            int extValue = -999;
+            
             try{
                 extValue = command.exitValue();
             }
             catch(Exception e)
             {
                 System.out.println("error grabing exit code");
-            }*/
+            }
             if(extValue == 0)
             {
                 retVal.remove("success");
