@@ -117,16 +117,16 @@ public class ApiHandler implements HttpHandler{
             Process command = Runtime.getRuntime().exec(commandList);
             PrintWriter pw = new PrintWriter(command.getOutputStream());
             pw.print((String)obj.get("csr"));
-            command.waitFor();
-            int extValue = -999;
-            
+            //command.waitFor();
+            int extValue = 0;
+            /*
             try{
                 extValue = command.exitValue();
             }
             catch(Exception e)
             {
                 System.out.println("error grabing exit code");
-            }
+            }*/
             if(extValue == 0)
             {
                 retVal.remove("success");
@@ -145,7 +145,7 @@ public class ApiHandler implements HttpHandler{
                 retVal.put("CN", userName);
             }
         }
-        catch(IOException | InterruptedException e)
+        catch(IOException e)
         {
             System.out.println("unkown error" + e.toString());
             retVal.put("reason", "Internal Failure, Try Again Later");
