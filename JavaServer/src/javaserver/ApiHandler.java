@@ -115,12 +115,7 @@ public class ApiHandler implements HttpHandler{
             "/countryName=US/stateOrProvinceName=Washington/localityName="
                     +"Bothell/organizationName=JustChat/JustChat "
                     +"Enterprises/commonName="+ userName};
-            Process command = Runtime.getRuntime().exec( "openssl ca -keyfile /etc/ssl/ca/ca.key "
-                            +"-cert /etc/ssl/ca/ca.crt -extensions usr_cert "
-                            +"-notext -md sha256 -in /tmp/1432063090.pem -subj "
-                            +"/countryName=US/stateOrProvinceName=Washington/"
-                            +"localityName=Bothell/organizationName=JustChat "
-                            + "Enterprises/commonName="+ userName+"");
+            Process command = new ProcessBuilder(commandList).start();
             PrintWriter pw = new PrintWriter(command.getOutputStream());
             pw.print((String)obj.get("csr"));
             try
