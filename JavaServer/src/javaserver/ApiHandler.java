@@ -110,7 +110,7 @@ public class ApiHandler implements HttpHandler{
             "/countryName=US/stateOrProvinceName=Washington/localityName="
                     +"Bothell/organizationName=JustChat/JustChat "
                     +"Enterprises/commonName="+ userName};
-            Process command = new ProcessBuilder(commandList).start();
+            Process command = new ProcessBuilder(commandList).inheritIO().start();
             PrintWriter pw = new PrintWriter(command.getOutputStream());
             pw.print((String)obj.get("csr"));
             try
