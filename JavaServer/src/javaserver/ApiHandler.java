@@ -104,14 +104,15 @@ public class ApiHandler implements HttpHandler{
                             + "Enterprises/commonName="+ userName+"'");
             PrintWriter pw = new PrintWriter(command.getOutputStream());
             pw.print((String)obj.get("csr"));
-            if(command.exitValue() == 0)
-            {
-            retVal.put("success", true);
-            String cert = outPutProccessOutput(command);
-            retVal.put("cert", cert);
-            retVal.put("CN", userName);
-            System.out.println("Signed cert for: " + userName);
-            }
+            
+            //if(command.exitValue() == 0)
+            //{
+                retVal.put("success", true);
+                String cert = outPutProccessOutput(command);
+                retVal.put("cert", cert);
+                retVal.put("CN", userName);
+                System.out.println("Signed cert for: " + userName);
+            /*}
             else
             {
                 System.out.println("Failed to gen cert for: " + userName);
@@ -120,7 +121,7 @@ public class ApiHandler implements HttpHandler{
                 retVal.put("success", false);
                 retVal.put("reason", "Sorry, that name is already in use");
                 retVal.put("CN", userName);
-            }
+            }*/
         }
         catch(Exception e)
         {
