@@ -104,7 +104,7 @@ public class ApiHandler implements HttpHandler{
         try
         {
             String[] commandList = {"openssl", "ca", "-keyfile", 
-                "/etc/ssl/ca/ca.key", "-cert", "/etc/ssl/ca/ca.crt",
+                "/etc/ssl/ca/ca.key", "-batch", "-cert", "/etc/ssl/ca/ca.crt",
             "-extensions", "usr_cert", "-notext", "-md", "sha256", "-in",
             "/dev/stdin", "-subj", 
             "/countryName=US/stateOrProvinceName=Washington/localityName="
