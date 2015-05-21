@@ -33,7 +33,6 @@ public class ApiHandler implements HttpHandler{
             else
             {
                 obj = new JSONObject();
-                obj.put("success", false);
                 obj.put("reason", Definitions.NO_API_INPUT);
                 response += obj.toString();
                 System.out.println(Definitions.NO_API_INPUT);
@@ -83,10 +82,10 @@ public class ApiHandler implements HttpHandler{
     public JSONObject runRegister(JSONObject obj)
     {
         JSONObject retVal = new JSONObject();
+        retVal.put("success", false);
         boolean flag = obj.containsKey("CN") && obj.containsKey("csr");
         if(!flag)
         {
-            retVal.put("success", false);
             retVal.put("reason", "Bad Input");
             System.out.println(Definitions.BAD_CSR_CN_API_INPUT);
             return retVal;
@@ -117,6 +116,7 @@ public class ApiHandler implements HttpHandler{
             }
             if(extValue == 0)
             {
+                retVal.remove("success");
                 retVal.put("success", true);
                 String cert = outPutProccessOutput(command);
                 retVal.put("cert", cert);
@@ -128,16 +128,14 @@ public class ApiHandler implements HttpHandler{
                 System.out.println("Failed to gen cert for: " + userName);
                 System.out.println("exit code: " + command.exitValue());
                 System.out.println(outPutProccessOutput(command));
-                retVal.put("success", false);
                 retVal.put("reason", "Sorry, that name is already in use");
                 retVal.put("CN", userName);
             }
         }
-        catch(Exception e)
+        catch(IOException | InterruptedException e)
         {
-            System.out.println("unkown error");
-            retVal.put("success", false);
-            retVal.put("reason", "Sorry, that name is already in use");
+            System.out.println("unkown error" + e.toString());
+            retVal.put("reason", "Internal Failure, Try Again Later");
             retVal.put("CN", userName);
         }
         return retVal;
