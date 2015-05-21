@@ -27,11 +27,6 @@ public class ApiHandler implements HttpHandler{
         JSONObject headerValues = new JSONObject();
         Set<Map.Entry<String, List<String>>> params = header.entrySet();
         
-        for(Map.Entry<String, List<String>> part : params)
-        {
-            System.out.println((String)part.getKey());
-            headerValues.put(part.getKey(), part.getValue());
-        }
         if(headerValues.containsKey("Client-verify"))
         {
             System.out.println(headerValues.get("Client-verify").toString());
