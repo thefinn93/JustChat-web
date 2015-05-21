@@ -26,11 +26,11 @@ public class ApiHandler implements HttpHandler{
         Headers header = he.getRequestHeaders();
         JSONObject headerValues = new JSONObject();
         Set<Map.Entry<String, List<String>>> params = header.entrySet();
-        
+
         if(headerValues.containsKey("Client-verify"))
         {
             System.out.println(headerValues.get("Client-verify").toString());
-            
+
         }
         String response = "";
         try{
@@ -59,7 +59,7 @@ public class ApiHandler implements HttpHandler{
     /**
      * This function switches to the aproriate function based on action
      * @param obj
-     * @return 
+     * @return
      */
     public JSONObject switchAction(JSONObject obj)
     {
@@ -85,7 +85,7 @@ public class ApiHandler implements HttpHandler{
     }
     /**
      * Run the register action
-     * @param obj containing the json data 
+     * @param obj containing the json data
      * @return success condition and necisary data in json format
      */
     public JSONObject runRegister(JSONObject obj)
@@ -103,16 +103,22 @@ public class ApiHandler implements HttpHandler{
         convertToAlpha(userName);
         try
         {
-            String[] commandList = {"openssl", "ca", "-keyfile", 
+            String[] commandList = {"openssl", "ca", "-keyfile",
                 "/etc/ssl/ca/ca.key", "-batch", "-cert", "/etc/ssl/ca/ca.crt",
             "-extensions", "usr_cert", "-notext", "-md", "sha256", "-in",
-            "/dev/stdin", "-subj", 
+            "/dev/stdin", "-subj",
             "/countryName=US/stateOrProvinceName=Washington/localityName="
                     +"Bothell/organizationName=JustChat/JustChat "
                     +"Enterprises/commonName="+ userName};
-            Process command = new ProcessBuilder(commandList).inheritIO().start();
+            Process command = new ProcessBuilder(commandList).start();
             PrintWriter pw = new PrintWriter(command.getOutputStream());
             pw.print((String)obj.get("csr"));
+            InputStreamReader isr = new InputStreamReader(command.getErrorStream());
+            BufferedReader br = new BufferedReader(isr);
+            String line = null;
+            while ((line = br.readLine()) != null) {
+              System.out.println(type + "> " + line);
+            }
             try
             {
                 command.waitFor();
@@ -122,7 +128,7 @@ public class ApiHandler implements HttpHandler{
                 System.out.println("failed to wait for openssl");
             }
             int extValue = -999;
-            
+
             try{
                 extValue = command.exitValue();
             }
