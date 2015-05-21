@@ -102,11 +102,23 @@ public class ApiHandler implements HttpHandler{
                             + "Enterprises/commonName="+ userName+"'");
             PrintWriter pw = new PrintWriter(command.getOutputStream());
             pw.print((String)obj.get("csr"));
+            if(command.exitValue() == 0)
+            {
             retVal.put("success", true);
             String cert = outPutProccessOutput(command);
             retVal.put("cert", cert);
             retVal.put("CN", userName);
             System.out.println("Signed cert for: " + userName);
+            }
+            else
+            {
+                System.out.println("Failed to gen cert for: " + userName);
+                System.out.println("exit code: " + command.exitValue());
+                System.out.println(outPutError(command));
+                retVal.put("success", false);
+                retVal.put("reason", "Sorry, that name is already in use");
+                retVal.put("CN", userName);
+            }
         }
         catch(Exception e)
         {
@@ -142,14 +154,24 @@ public class ApiHandler implements HttpHandler{
         String retVal = "";
         BufferedReader stdInput = new BufferedReader(
                 new InputStreamReader(inputSource.getInputStream()));
-        BufferedReader stdError = new BufferedReader(
-                new InputStreamReader(inputSource.getErrorStream()));
         String tempVal = "";
         while((tempVal = stdInput.readLine()) != null)
         {
             retVal +=tempVal;
         }
-        tempVal = "";
+        return retVal;
+    }
+    /**
+     * Prints error from command
+     * @param inputSource response from executing command
+     * @throws IOException
+     */
+    private String outPutError(Process inputSource) throws IOException
+    {
+        String retVal = "";
+        BufferedReader stdError = new BufferedReader(
+                new InputStreamReader(inputSource.getErrorStream()));
+        String tempVal = "";
         while((tempVal = stdError.readLine()) != null)
         {
             retVal +=tempVal;
