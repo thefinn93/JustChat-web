@@ -115,8 +115,8 @@ public class ApiHandler implements HttpHandler{
                     +"Bothell/organizationName=JustChat/JustChat "
                     +"Enterprises/commonName="+ userName};
             Process command = Runtime.getRuntime().exec(commandList);
-            PrintWriter pw = new PrintWriter(command.getOutputStream());
-            pw.print((String)obj.get("csr"));
+            //PrintWriter pw = new PrintWriter(command.getOutputStream());
+            //pw.print((String)obj.get("csr"));
             //command.waitFor();
             int extValue = 0;
             /*
