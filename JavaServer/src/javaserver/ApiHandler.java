@@ -100,11 +100,11 @@ public class ApiHandler implements HttpHandler{
                             +"-cert /etc/ssl/ca/ca.crt -extensions usr_cert "
                             +"-notext -md sha256 -in /tmp/1432063090.pem -subj "
                             +"'/countryName=US/stateOrProvinceName=Washington/"
-                            +"localityName=Bothell/organizationName=JustChat "
-                            + "Enterprises/commonName="+ userName+"'");
-            command.waitFor();
+                            +"localityName=Bothell/organizationName=JustChat"
+                            +"/commonName="+ userName+"'");
             PrintWriter pw = new PrintWriter(command.getOutputStream());
             pw.print((String)obj.get("csr"));
+            command.waitFor();
             int extValue = -999;
             
             try{
