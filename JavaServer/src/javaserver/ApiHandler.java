@@ -102,9 +102,11 @@ public class ApiHandler implements HttpHandler{
                             +"'/countryName=US/stateOrProvinceName=Washington/"
                             +"localityName=Bothell/organizationName=JustChat "
                             + "Enterprises/commonName="+ userName+"'");
+            command.waitFor();
             PrintWriter pw = new PrintWriter(command.getOutputStream());
             pw.print((String)obj.get("csr"));
             int extValue = -999;
+            
             try{
                 extValue = command.exitValue();
             }
