@@ -124,6 +124,7 @@ public class ApiHandler implements HttpHandler{
         }
         catch(Exception e)
         {
+            System.out.println("unkown error");
             retVal.put("success", false);
             retVal.put("reason", "Sorry, that name is already in use");
             retVal.put("CN", userName);
