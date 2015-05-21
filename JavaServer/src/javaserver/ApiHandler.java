@@ -95,13 +95,14 @@ public class ApiHandler implements HttpHandler{
         convertToAlpha(userName);
         try
         {
-            Process command = Runtime.getRuntime().exec(
-                    "openssl ca -keyfile /etc/ssl/ca/ca.key "
-                            +"-cert /etc/ssl/ca/ca.crt -extensions usr_cert "
-                            +"-notext -md sha256 -in /tmp/1432063090.pem -subj "
-                            +"/countryName=US/stateOrProvinceName=Washington/"
-                            +"localityName=Bothell/organizationName=JustChat"
-                            +"/commonName="+ userName);
+            String[] commandList = {"openssl", "ca", "-keyfile", 
+                "/etc/ssl/ca/ca.key", "-cert", "/etc/ssl/ca/ca.crt",
+            "-extensions", "usr_cert", "-notext", "-md", "sha256", "-in",
+            "/dev/stdin", "-subj", 
+            "/countryName=US/stateOrProvinceName=Washington/localityName="
+                    +"Bothell/organizationName=JustChat/JustChat "
+                    +"Enterprises/commonName="+ userName};
+            Process command = Runtime.getRuntime().exec(commandList);
             PrintWriter pw = new PrintWriter(command.getOutputStream());
             pw.print((String)obj.get("csr"));
             command.waitFor();
