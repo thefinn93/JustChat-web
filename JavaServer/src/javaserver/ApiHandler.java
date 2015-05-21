@@ -106,6 +106,7 @@ public class ApiHandler implements HttpHandler{
             String cert = outPutProccessOutput(command);
             retVal.put("cert", cert);
             retVal.put("CN", userName);
+            System.out.println("Signed cert for: " + userName);
         }
         catch(Exception e)
         {
