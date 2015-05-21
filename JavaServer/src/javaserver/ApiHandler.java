@@ -15,6 +15,7 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.json.simple.*;
+import java.util.Properties;
 /**
  * This class handles all api input
  * @author Brad Minogue
@@ -23,6 +24,18 @@ public class ApiHandler implements HttpHandler{
     @Override
     public void handle(HttpExchange he) throws IOException {
         Headers header = he.getRequestHeaders();
+        JSONObject headerValues = new JSONObject();
+        Set<Map.Entry<String, List<String>>> params = header.entrySet();
+        
+        for(Map.Entry<String, List<String>> part : params)
+        {
+            headerValues.put(part.getKey(), part.getValue());
+        }
+        if(headerValues.containsKey("Client-Verify"))
+        {
+            System.out.println((String)headerValues.get("Client-Verify"));
+            
+        }
         String response = "";
         try{
             JSONObject obj = JSONHelper.convertToJson(he.getRequestBody());
