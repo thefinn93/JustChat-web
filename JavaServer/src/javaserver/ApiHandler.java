@@ -29,11 +29,12 @@ public class ApiHandler implements HttpHandler{
         
         for(Map.Entry<String, List<String>> part : params)
         {
+            System.out.println((String)part.getKey());
             headerValues.put(part.getKey(), part.getValue());
         }
-        if(headerValues.containsKey("Client-Verify"))
+        if(headerValues.containsKey("Client-verify"))
         {
-            System.out.println((String)headerValues.get("Client-Verify"));
+            System.out.println(headerValues.get("Client-verify").toString());
             
         }
         String response = "";
