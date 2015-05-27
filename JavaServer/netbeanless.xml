@@ -25,7 +25,9 @@
 		</classpath>
 	</javac>
 	<jar destfile="./dist/JustChatServer.jar" basedir="./build/classes">
-        	<zipfileset src="./build/json-simple-1.1.1.jar" excludes="META-INF/*" />
+        	<zipfileset src="./build/bcpkix-jdk15on-152.jar" excludes="META-INF/*" />
+        	<zipfileset src="./build/bcprov-ext-jdk15on-152.jar" excludes="META-INF/*" />
+        	<zipfileset src="./build/bcprov-jdk15on-152.jar" excludes="META-INF/*" />
 		<manifest>
 			<attribute name="Class-Path" value="./build/*.jar"/>
             		<attribute name="Main-Class" value="javaserver.JavaServer"/>
