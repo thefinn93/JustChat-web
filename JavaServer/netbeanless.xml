@@ -7,13 +7,13 @@
 		<url url="http://json-simple.googlecode.com/files/json-simple-1.1.1.jar"/>
 	</get>
 	<get dest="./build/bcpkix-jdk15on-152.jar" usetimestamp="true">
-		<url url="www.bouncycastle.org/download/bcpkix-jdk15on-152.jar"/>
+		<url url="http://www.bouncycastle.org/download/bcpkix-jdk15on-152.jar"/>
 	</get>
 	<get dest="./build/bcprov-ext-jdk15on-152.jar" usetimestamp="true">
-		<url url="www.bouncycastle.org/download/bcprov-ext-jdk15on-152.jar"/>
+		<url url="http://www.bouncycastle.org/download/bcprov-ext-jdk15on-152.jar"/>
 	</get>
 	<get dest="./build/bcprov-jdk15on-152.jar" usetimestamp="true">
-		<url url="www.bouncycastle.org/download/bcprov-jdk15on-152.jar"/>
+		<url url="http://www.bouncycastle.org/download/bcprov-jdk15on-152.jar"/>
 	</get>
 	<javac srcdir="./src/javaserver/"
 		destdir="./build/classes/"
