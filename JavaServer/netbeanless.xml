@@ -20,7 +20,7 @@
 		>
 		<classpath>
 			<fileset dir="./build/">
-				<include name= "json-simple-1.1.1.jar"/>
+				<include name= "*.jar"/>
 			</fileset>
 		</classpath>
 	</javac>
@@ -32,3 +32,4 @@
 		</manifest>
 	</jar>
 </project>
+
