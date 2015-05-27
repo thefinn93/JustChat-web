@@ -6,6 +6,15 @@
 	<get dest="./build/json-simple-1.1.1.jar" usetimestamp="true">
 		<url url="http://json-simple.googlecode.com/files/json-simple-1.1.1.jar"/>
 	</get>
+	<get dest="./build/bcpkix-jdk15on-152.jar" usetimestamp="true">
+		<url url="www.bouncycastle.org/download/bcpkix-jdk15on-152.jar"/>
+	</get>
+	<get dest="./build/bcprov-ext-jdk15on-152.jar" usetimestamp="true">
+		<url url="www.bouncycastle.org/download/bcprov-ext-jdk15on-152.jar"/>
+	</get>
+	<get dest="./build/bcprov-jdk15on-152.jar" usetimestamp="true">
+		<url url="www.bouncycastle.org/download/bcprov-jdk15on-152.jar"/>
+	</get>
 	<javac srcdir="./src/javaserver/"
 		destdir="./build/classes/"
 		>
@@ -18,7 +27,7 @@
 	<jar destfile="./dist/JustChatServer.jar" basedir="./build/classes">
         	<zipfileset src="./build/json-simple-1.1.1.jar" excludes="META-INF/*" />
 		<manifest>
-			<attribute name="Class-Path" value="./build/json-simple-1.1.1.jar"/>
+			<attribute name="Class-Path" value="./build/*.jar"/>
             		<attribute name="Main-Class" value="javaserver.JavaServer"/>
 		</manifest>
 	</jar>

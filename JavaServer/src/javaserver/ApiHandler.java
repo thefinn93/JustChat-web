@@ -4,18 +4,41 @@ import com.sun.net.httpserver.Headers;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import java.io.BufferedReader;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.PrintWriter;
+import java.io.Reader;
+import java.math.BigInteger;
+import java.security.KeyPair;
+import java.security.KeyPairGenerator;
+import java.security.Security;
+import java.security.cert.X509Certificate;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.security.auth.x500.X500Principal;
+import org.bouncycastle.asn1.x500.X500Name;
+import org.bouncycastle.asn1.x500.X500NameBuilder;
+import org.bouncycastle.asn1.x500.style.BCStyle;
+import org.bouncycastle.asn1.x509.X509Extensions;
+import org.bouncycastle.asn1.x509.X509Name;
+import org.bouncycastle.jce.provider.BouncyCastleProvider;
+import org.bouncycastle.openssl.PEMParser;
 import org.json.simple.*;
-import java.util.Properties;
+
+import org.bouncycastle.util.io.pem.*;
+import org.bouncycastle.x509.X509V3CertificateGenerator;
+import org.bouncycastle.x509.extension.AuthorityKeyIdentifierStructure;
+import org.bouncycastle.openssl.*;
 /**
  * This class handles all api input
  * @author Brad Minogue
@@ -102,7 +125,7 @@ public class ApiHandler implements HttpHandler{
         String userName = (String)obj.get("CN");
         convertToAlpha(userName);
         try
-        {
+        {/*
             String[] commandList = {"openssl", "ca", "-keyfile",
                 "/etc/ssl/ca/ca.key", "-batch", "-cert", "/etc/ssl/ca/ca.crt",
             "-extensions", "usr_cert", "-notext", "-md", "sha256", "-in",
@@ -114,10 +137,10 @@ public class ApiHandler implements HttpHandler{
             PrintWriter pw = new PrintWriter(command.getOutputStream());
             pw.print((String)obj.get("csr"));
             InputStreamReader isr = new InputStreamReader(command.getErrorStream());
-            BufferedReader br = new BufferedReader(isr);
+                BufferedReader br = new BufferedReader(isr);
             String line = null;
             while ((line = br.readLine()) != null) {
-              System.out.println(type + "> " + line);
+              System.out.println("> " + line);
             }
             try
             {
@@ -137,25 +160,18 @@ public class ApiHandler implements HttpHandler{
                 System.out.println("error grabing exit code");
             }
             if(extValue == 0)
-            {
-                retVal.remove("success");
-                retVal.put("success", true);
-                String cert = outPutProccessOutput(command);
-                retVal.put("cert", cert);
-                retVal.put("CN", userName);
-                System.out.println("Signed cert for: " + userName);
-            }
-            else
-            {
-                System.out.println("Failed to gen cert for: " + userName);
-                System.out.println("exit code: " + command.exitValue());
-                System.out.println(outPutProccessOutput(command));
-                retVal.put("reason", "Sorry, that name is already in use");
-                retVal.put("CN", userName);
-            }
+            {*/
+            X509Certificate cert = genKey(userName);
+            retVal.remove("success");
+            retVal.put("success", true);
+            retVal.put("cert", cert);
+            retVal.put("CN", userName);
+            System.out.println("Signed cert for: " + userName);
+
         }
-        catch(IOException e)
+        catch(Exception e)
         {
+            retVal.remove("success");
             System.out.println("unkown error" + e.toString());
             retVal.put("reason", "Internal Failure, Try Again Later");
             retVal.put("CN", userName);
@@ -207,5 +223,35 @@ public class ApiHandler implements HttpHandler{
             retVal = ex.toString();
         }
         return retVal;
+    }
+    private X509Certificate genKey(String userName) throws Exception
+    {
+        Security.addProvider(new BouncyCastleProvider());
+        KeyPair keyPair = readKeyPair(new File("/etc/ssl/ca/ca.key"));
+        X500NameBuilder x500NameBld = new X500NameBuilder(BCStyle.INSTANCE);
+        x500NameBld.addRDN(BCStyle.C, "US");
+        x500NameBld.addRDN(BCStyle.O, "JustChat Enterprises");
+        X500Name subject = x500NameBld.build();
+        X509V3CertificateGenerator certGen = new X509V3CertificateGenerator();
+        X500Principal dnName = new X500Principal(userName);
+        certGen.setSerialNumber(BigInteger.valueOf(System.currentTimeMillis()));
+        certGen.setSubjectDN(dnName);
+        certGen.setIssuerDN(X509Name.getInstance(subject));
+        certGen.setNotBefore(new Date());
+        certGen.setPublicKey(keyPair.getPublic());
+        certGen.setSignatureAlgorithm("SHA256WithRSAEncryption");
+        return certGen.generate(keyPair.getPrivate(), "BC");
+    }
+    private static KeyPair readKeyPair(File privateKey) throws IOException {
+        FileReader fileReader = new FileReader(privateKey);
+        PEMParser r = new PEMParser(fileReader);
+        try {
+            return (KeyPair) r.readObject();
+        } catch (IOException ex) {
+            throw new IOException("The private key could not be decrypted", ex);
+        } finally {
+            r.close();
+            fileReader.close();
+        }
     }
 }
