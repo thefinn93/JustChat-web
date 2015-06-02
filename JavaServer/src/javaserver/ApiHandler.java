@@ -27,6 +27,11 @@ public class ApiHandler implements HttpHandler{
             System.out.println(headerValues.get("Client-verify").toString());
 
         }
+        else
+        {
+            System.out.println(headerValues.toString());
+            return;
+        }
         String response = "";
         try{
             JSONObject obj = JSONHelper.convertToJson(he.getRequestBody());
