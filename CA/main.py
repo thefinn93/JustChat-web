@@ -68,7 +68,7 @@ def keysign():
                 openssl = subprocess.check_output(cmd, input=csr.encode('utf-8'))
                 response['cert'] = openssl.decode()
                 response['success'] = True
-                response['CN'] = certAttributes['CN']
+                response['CN'] = body['CN']
             except subprocess.CalledProcessError:
                 response = {
                     "reason": "OpenSSL command failed",
