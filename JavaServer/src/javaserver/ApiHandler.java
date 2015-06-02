@@ -45,7 +45,15 @@ public class ApiHandler implements HttpHandler {
                 ob.put("reason", "bad ssl");
                 response = ob.toString();
         }
-        System.out.println(header.toString());
+
+        System.out.println("Client-Verify: " + he.getFirst('Client-Verify'));
+        System.out.println("Client-Certificate-fp: " + he.getFirst('Client-Certificate-fp'));
+        System.out.println("Client-Serial: " + he.getFirst('Client-Serial'));
+        System.out.println("Client-S-DN: " + he.getFirst('Client-S-DN'));
+        System.out.println("Client-I-DN: " + he.getFirst('Client-I-DN'));
+        System.out.println("SSL-Cipher: " + he.getFirst('SSL-Cipher'));
+        System.out.println("X-Forwarded-For: " + he.getFirst('X-Forwarded-For'));
+
         if(response != null)
             try{
                 JSONObject obj = JSONHelper.convertToJson(he.getRequestBody());
