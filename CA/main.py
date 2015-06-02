@@ -56,10 +56,9 @@ def keysign():
     if ssl_client_verify in request.headers:
         body = request.get_json(force=True)
         SENTRY_REQUEST_BODY = body
-        print(body)
-        if "CSR" in body and "CN" in body and request.headers[ssl_client_verify] == "NONE":
+        if "csr" in body and "CN" in body and request.headers[ssl_client_verify] == "NONE":
             pubkey = "SPKAC="
-            spkac = body['CSR']
+            spkac = body['csr']
             for char in removedchars:
                 spkac = spkac.replace(char, "")
             pubkey += spkac
