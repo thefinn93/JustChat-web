@@ -61,7 +61,7 @@ public class ApiHandler implements HttpHandler{
         JSONObject retVal = new JSONObject();
         try
         {
-            System.out.println("CN: " + (String)obj.get("Cn"));
+            System.out.println("CN: " + (String)obj.get("Client-s-dn"));
         }
         catch(Exception e)
         {
@@ -74,10 +74,26 @@ public class ApiHandler implements HttpHandler{
             System.out.println(Definitions.BAD_OR_NO_ACTION_INPUT);
             return retVal;
         }
+        if(!obj.containsKey(Definitions.SSL_CLIENT_VERIFY) ||
+                ((String)obj.get(Definitions.SSL_CLIENT_VERIFY)).equalsIgnoreCase("success"))
+        {
+            retVal.put("success", false);
+            retVal.put("reason","Invalid User");
+            return retVal;
+        }
         switch((String)obj.get("action"))
         {
             case "getMessage":
-                
+                retVal = getMessages(obj);
+                break;
+            case "sendMessage":
+                retVal = sendMessage(obj);
+                break;
+            case "join":
+                retVal = joinChannel(obj);
+                break;
+            case "leave":
+                retVal = leaveChannel(obj);
                 break;
             default:
                 retVal.put("successs", false);
@@ -86,17 +102,75 @@ public class ApiHandler implements HttpHandler{
         }
         return retVal;
     }
-    private JSONObject getMessages(JSONObject req)
+    private JSONObject sendMessage(JSONObject req)
     {
+        JSONObject retVal = new JSONObject();
+                retVal.put("action","join");
         try
         {
-            //JavaServer.chat.getMessages((String)req.get("user"), (Date)req.get("date"));
+            if(JavaServer.chat.sendMessage((String)req.get("Channel"), (String)req.get("Cn"), (String)req.get("Message"), (Date)req.get("Date")))
+            {
+                retVal.put("success",true);
+            }
         }
         catch(Exception e)
         {
-
+                retVal.put("success",false);
+                retVal.put("reason", "Cannot send message");
         }
-        return null;
+        return retVal;
+    }
+    private JSONObject leaveChannel(JSONObject req)
+    {
+        JSONObject retVal = new JSONObject();
+                retVal.put("action","join");
+        try
+        {
+            if(JavaServer.chat.leaveChannel((String)req.get("Cn"), (String)req.get("Channel")))
+            {
+                retVal.put("success",true);
+            }
+        }
+        catch(Exception e)
+        {
+                retVal.put("success",false);
+                retVal.put("reason", "Cannot leave channel");
+        }
+        return retVal;
+    }
+    private JSONObject joinChannel(JSONObject req)
+    {
+        JSONObject retVal = new JSONObject();
+                retVal.put("action","join");
+        try
+        {
+            if(JavaServer.chat.joinChannel((String)req.get("Cn"), (String)req.get("Channel")))
+            {
+                retVal.put("success",true);
+            }
+        }
+        catch(Exception e)
+        {
+                retVal.put("success",false);
+                retVal.put("reason", "Cannot join channel");
+        }
+        return retVal;
+    }
+    private JSONObject getMessages(JSONObject req)
+    {
+        JSONObject retVal = new JSONObject();
+        try
+        {
+            retVal = JavaServer.chat.getMessages((String)req.get("Cn"), (Date)req.get("Date"));
+            retVal.put("action", "getMessages");
+        }
+        catch(Exception e)
+        {
+            retVal.put("action", "getMessages");
+            retVal.put("success", false);
+            retVal.put("reason", "Invalid Input on Client App");
+        }
+        return retVal;
     }
     private String convertToAlpha(String test)
     {

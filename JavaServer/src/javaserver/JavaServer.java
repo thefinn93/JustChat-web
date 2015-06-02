@@ -11,6 +11,7 @@ import java.net.InetSocketAddress;
  * @author Brad Minogue
  */
 public class JavaServer {
+    public static ChatLogic chat = new ChatLogic();
     private static final  String[] contextList = {"/", "/git","/api"};
     private static final HttpHandler[] contextHandlerList = {
         new IndexHandler(),
