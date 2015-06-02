@@ -55,16 +55,17 @@ def keysign():
     }
     SENTRY_USER_ATTRS = request.form
     if ssl_client_verify in request.headers:
-        if "pubkey" in request.form and request.headers[ssl_client_verify] == "NONE":
+        body = request.get_body(force=True)
+        if "CSR" in body and "CN" in body and request.headers[ssl_client_verify] == "NONE":
             pubkey = "SPKAC="
-            spkac = request.form['pubkey']
+            spkac = body['CSR']
             for char in removedchars:
                 spkac = spkac.replace(char, "")
             pubkey += spkac
 
             certAttributes['CN'] = random.randint(0, 1000)
             if "CN" in request.form:
-                certAttributes['CN'] = request.form['CN']
+                certAttributes['CN'] = body['CN']
 
             for attribute in certAttributes:
                 pubkey += "\n%s=%s" % (attribute, certAttributes[attribute])
@@ -82,8 +83,7 @@ def keysign():
                     "success": False
                 }
         else:
-            print(request.headers[ssl_client_verify])
-            sentry.captureMessage("Got a keysign request with a client cert!")
+            sentry.captureMessage("Got a keysign request with a client cert or invalid body")
             response['reason'] = "You silly goose, you already have a certificate!"
     return jsonify(response)
 
