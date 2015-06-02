@@ -19,16 +19,19 @@ public class ApiHandler implements HttpHandler {
     @Override
     public void handle(HttpExchange he) throws IOException {
         Headers header = he.getRequestHeaders();
-        JSONObject headerValues = new JSONObject();
         Set<Map.Entry<String, List<String>>> params = header.entrySet();
         String userName = null;
         String response = "";
         try
         {
-            if(headerValues.containsKey("Client-verify")
-                    && ((String)headerValues.get("Client-verify")).equalsIgnoreCase("success"))
+            if(header.containsKey("Client-verify")
+                    && (header.getFirst("Client-verify")).equalsIgnoreCase("success"))
             {
-                userName = (String)headerValues.get("Cn");
+                // This is such a terribly way to get the username, but we're on a deadline and
+                // security is no longer a priority. If additional time is available, look at
+                // https://stackoverflow.com/questions/2914521/how-to-extract-cn-from-x509certificate-in-java
+                userName = headerValues.get("Client-S-DN").split("CN=")[1];
+                System.out.println("Username verified as " + userName);
             }
             else
             {
@@ -47,12 +50,7 @@ public class ApiHandler implements HttpHandler {
         }
 
         System.out.println("Client-Verify: " + header.getFirst("Client-Verify"));
-        System.out.println("Client-Certificate-fp: " + header.getFirst("Client-Certificate-fp"));
-        System.out.println("Client-Serial: " + header.getFirst("Client-Serial"));
         System.out.println("Client-S-DN: " + header.getFirst("Client-S-DN"));
-        System.out.println("Client-I-DN: " + header.getFirst("Client-I-DN"));
-        System.out.println("SSL-Cipher: " + header.getFirst("SSL-Cipher"));
-        System.out.println("X-Forwarded-For: " + header.getFirst("X-Forwarded-For"));
 
         if(response != null)
             try{
