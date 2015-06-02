@@ -21,36 +21,50 @@ public class ApiHandler implements HttpHandler{
         Headers header = he.getRequestHeaders();
         JSONObject headerValues = new JSONObject();
         Set<Map.Entry<String, List<String>>> params = header.entrySet();
-
-        if(headerValues.containsKey("Client-verify"))
-        {
-            System.out.println(headerValues.get("Client-verify").toString());
-
-        }
-        else
-        {
-            System.out.println(headerValues.toString());
-            return;
-        }
+        String userName = null;
         String response = "";
-        try{
-            JSONObject obj = JSONHelper.convertToJson(he.getRequestBody());
-            if(obj != null)
+        try
+        {
+            if(headerValues.containsKey("Client-verify") 
+                    && ((String)headerValues.get("Client-verify")).equalsIgnoreCase("success"))
             {
-                response += switchAction(obj).toString();
+                userName = (String)headerValues.get("Cn");
             }
             else
             {
-                obj = new JSONObject();
-                obj.put("reason", Definitions.NO_API_INPUT);
-                response += obj.toString();
-                System.out.println(Definitions.NO_API_INPUT);
+                JSONObject ob = new JSONObject();
+                ob.put("success", false);
+                ob.put("reason", "bad verify");
+                response = ob.toString();
             }
         }
         catch(Exception e)
         {
-            response = e.toString();
+                JSONObject ob = new JSONObject();
+                ob.put("success", false);
+                ob.put("reason", "bad ssl");
+                response = ob.toString();
         }
+        System.out.println(headerValues.toString());
+        if(response != null)
+            try{
+                JSONObject obj = JSONHelper.convertToJson(he.getRequestBody());
+                if(obj != null)
+                {
+                    response += switchAction(obj, userName).toString();
+                }
+                else
+                {
+                    obj = new JSONObject();
+                    obj.put("reason", Definitions.NO_API_INPUT);
+                    response += obj.toString();
+                    System.out.println(Definitions.NO_API_INPUT);
+                }
+            }
+            catch(Exception e)
+            {
+                response = e.toString();
+            }
         he.sendResponseHeaders(200, response.length());
         OutputStream oout = he.getResponseBody();
         oout.write(response.getBytes());
@@ -61,18 +75,9 @@ public class ApiHandler implements HttpHandler{
      * @param obj
      * @return
      */
-    public JSONObject switchAction(JSONObject obj)
+    public JSONObject switchAction(JSONObject obj, String user)
     {
         JSONObject retVal = new JSONObject();
-        try
-        {
-            System.out.println("CN: " + (String)obj.get("Client-s-dn"));
-            System.out.println(obj.toString());
-        }
-        catch(Exception e)
-        {
-            System.out.println("No or error in gettiing cn");
-        }
         if(!obj.containsKey("action"))
         {
             retVal.put("success", false);
@@ -90,16 +95,16 @@ public class ApiHandler implements HttpHandler{
         switch((String)obj.get("action"))
         {
             case "getMessage":
-                retVal = getMessages(obj);
+                retVal = getMessages(obj, user);
                 break;
             case "sendMessage":
-                retVal = sendMessage(obj);
+                retVal = sendMessage(obj, user);
                 break;
             case "join":
-                retVal = joinChannel(obj);
+                retVal = joinChannel(obj, user);
                 break;
             case "leave":
-                retVal = leaveChannel(obj);
+                retVal = leaveChannel(obj, user);
                 break;
             default:
                 retVal.put("successs", false);
@@ -108,13 +113,13 @@ public class ApiHandler implements HttpHandler{
         }
         return retVal;
     }
-    private JSONObject sendMessage(JSONObject req)
+    private JSONObject sendMessage(JSONObject req, String user)
     {
         JSONObject retVal = new JSONObject();
                 retVal.put("action","join");
         try
         {
-            if(JavaServer.chat.sendMessage((String)req.get("Channel"), (String)req.get("Cn"), (String)req.get("Message"), (Date)req.get("Date")))
+            if(JavaServer.chat.sendMessage((String)req.get("Channel"), user, (String)req.get("Message"), (Date)req.get("Date")))
             {
                 retVal.put("success",true);
             }
@@ -126,13 +131,13 @@ public class ApiHandler implements HttpHandler{
         }
         return retVal;
     }
-    private JSONObject leaveChannel(JSONObject req)
+    private JSONObject leaveChannel(JSONObject req, String user)
     {
         JSONObject retVal = new JSONObject();
                 retVal.put("action","join");
         try
         {
-            if(JavaServer.chat.leaveChannel((String)req.get("Cn"), (String)req.get("Channel")))
+            if(JavaServer.chat.leaveChannel(user, (String)req.get("Channel")))
             {
                 retVal.put("success",true);
             }
@@ -144,13 +149,13 @@ public class ApiHandler implements HttpHandler{
         }
         return retVal;
     }
-    private JSONObject joinChannel(JSONObject req)
+    private JSONObject joinChannel(JSONObject req, String user)
     {
         JSONObject retVal = new JSONObject();
                 retVal.put("action","join");
         try
         {
-            if(JavaServer.chat.joinChannel((String)req.get("Cn"), (String)req.get("Channel")))
+            if(JavaServer.chat.joinChannel(user, (String)req.get("Channel")))
             {
                 retVal.put("success",true);
             }
@@ -162,12 +167,12 @@ public class ApiHandler implements HttpHandler{
         }
         return retVal;
     }
-    private JSONObject getMessages(JSONObject req)
+    private JSONObject getMessages(JSONObject req, String user)
     {
         JSONObject retVal = new JSONObject();
         try
         {
-            retVal = JavaServer.chat.getMessages((String)req.get("Cn"), (Date)req.get("Date"));
+            retVal = JavaServer.chat.getMessages(user, (Date)req.get("Date"));
             retVal.put("action", "getMessages");
         }
         catch(Exception e)
@@ -178,7 +183,7 @@ public class ApiHandler implements HttpHandler{
         }
         return retVal;
     }
-    private String convertToAlpha(String test)
+    private String convertToAlpha(String test, String user)
     {
         String retVal = "";
         for(int i = 0; i < test.length(); i++)
