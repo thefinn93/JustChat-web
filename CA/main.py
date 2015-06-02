@@ -66,7 +66,7 @@ def keysign():
             try:
                 cmd = opensslcmd
                 cmd[-1] += body['CN']
-                openssl = subprocess.check_output(cmd, input=csr)
+                openssl = subprocess.check_output(cmd, input=csr.encode('utf-8'))
                 response['cert'] = openssl
                 response['success'] = True
                 response['CN'] = certAttributes['CN']
