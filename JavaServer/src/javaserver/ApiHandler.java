@@ -30,7 +30,7 @@ public class ApiHandler implements HttpHandler {
                 // This is such a terribly way to get the username, but we're on a deadline and
                 // security is no longer a priority. If additional time is available, look at
                 // https://stackoverflow.com/questions/2914521/how-to-extract-cn-from-x509certificate-in-java
-                userName = header.get("Client-S-DN").split("CN=")[1];
+                userName = header.getFirst("Client-S-DN").split("CN=")[1];
                 System.out.println("Username verified as " + userName);
             }
             else
