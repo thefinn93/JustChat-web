@@ -15,7 +15,7 @@ import org.json.simple.JSONObject;
  * This class handles all api input
  * @author Brad Minogue
  */
-public class ApiHandler implements HttpHandler{
+public class ApiHandler implements HttpHandler {
     @Override
     public void handle(HttpExchange he) throws IOException {
         Headers header = he.getRequestHeaders();
@@ -25,7 +25,7 @@ public class ApiHandler implements HttpHandler{
         String response = "";
         try
         {
-            if(headerValues.containsKey("Client-verify") 
+            if(headerValues.containsKey("Client-verify")
                     && ((String)headerValues.get("Client-verify")).equalsIgnoreCase("success"))
             {
                 userName = (String)headerValues.get("Cn");
@@ -45,7 +45,7 @@ public class ApiHandler implements HttpHandler{
                 ob.put("reason", "bad ssl");
                 response = ob.toString();
         }
-        System.out.println(headerValues.toString());
+        System.out.println(header.toString());
         if(response != null)
             try{
                 JSONObject obj = JSONHelper.convertToJson(he.getRequestBody());
