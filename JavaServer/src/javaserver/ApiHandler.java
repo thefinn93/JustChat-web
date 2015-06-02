@@ -62,6 +62,7 @@ public class ApiHandler implements HttpHandler{
         try
         {
             System.out.println("CN: " + (String)obj.get("Client-s-dn"));
+            System.out.println(obj.toString());
         }
         catch(Exception e)
         {
