@@ -1,30 +1,15 @@
 package javaserver;
-
 import com.sun.net.httpserver.Headers;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import java.io.BufferedReader;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
-import java.io.PrintWriter;
-import java.io.Reader;
-import java.math.BigInteger;
-import java.security.KeyPair;
-import java.security.KeyPairGenerator;
-import java.security.Security;
-import java.security.cert.X509Certificate;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.json.simple.JSONObject;
 /**
  * This class handles all api input
@@ -74,6 +59,14 @@ public class ApiHandler implements HttpHandler{
     public JSONObject switchAction(JSONObject obj)
     {
         JSONObject retVal = new JSONObject();
+        try
+        {
+            System.out.println("CN: " + (String)obj.get("Cn"));
+        }
+        catch(Exception e)
+        {
+            System.out.println("No or error in gettiing cn");
+        }
         if(!obj.containsKey("action"))
         {
             retVal.put("success", false);
@@ -83,12 +76,27 @@ public class ApiHandler implements HttpHandler{
         }
         switch((String)obj.get("action"))
         {
+            case "getMessage":
+                
+                break;
             default:
                 retVal.put("successs", false);
                 retVal.put("reason", Definitions.BAD_OR_NO_ACTION_INPUT);
                 break;
         }
         return retVal;
+    }
+    private JSONObject getMessages(JSONObject req)
+    {
+        try
+        {
+            //JavaServer.chat.getMessages((String)req.get("user"), (Date)req.get("date"));
+        }
+        catch(Exception e)
+        {
+
+        }
+        return null;
     }
     private String convertToAlpha(String test)
     {
