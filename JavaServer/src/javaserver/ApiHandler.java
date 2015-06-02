@@ -46,13 +46,13 @@ public class ApiHandler implements HttpHandler {
                 response = ob.toString();
         }
 
-        System.out.println("Client-Verify: " + he.getFirst("Client-Verify"));
-        System.out.println("Client-Certificate-fp: " + he.getFirst("Client-Certificate-fp"));
-        System.out.println("Client-Serial: " + he.getFirst("Client-Serial"));
-        System.out.println("Client-S-DN: " + he.getFirst("Client-S-DN"));
-        System.out.println("Client-I-DN: " + he.getFirst("Client-I-DN"));
-        System.out.println("SSL-Cipher: " + he.getFirst("SSL-Cipher"));
-        System.out.println("X-Forwarded-For: " + he.getFirst("X-Forwarded-For"));
+        System.out.println("Client-Verify: " + header.getFirst("Client-Verify"));
+        System.out.println("Client-Certificate-fp: " + header.getFirst("Client-Certificate-fp"));
+        System.out.println("Client-Serial: " + header.getFirst("Client-Serial"));
+        System.out.println("Client-S-DN: " + header.getFirst("Client-S-DN"));
+        System.out.println("Client-I-DN: " + header.getFirst("Client-I-DN"));
+        System.out.println("SSL-Cipher: " + header.getFirst("SSL-Cipher"));
+        System.out.println("X-Forwarded-For: " + header.getFirst("X-Forwarded-For"));
 
         if(response != null)
             try{
