@@ -26,9 +26,13 @@ sentry = Sentry(app)
 
 cacrt = "/etc/ssl/ca/ca.crt"
 cakey = "/etc/ssl/ca/ca.key"
-opensslcmd = ['openssl', 'ca', '-keyfile', cakey, '-cert', cacrt,
-              '-extensions', 'usr_cert', '-notext', '-md', 'sha256', '-spkac',
-              '/dev/stdin', '-out', '/dev/stdout']
+
+subject = '/countryName=US/stateOrProvinceName=Washington/localityName=Bothell'
+subject += '/organizationName=JustChat Enterprises/commonName='
+
+opensslcmd = ['openssl', 'ca', '-keyfile', cakey, '-cert', cacrt, '-extensions', 'usr_cert',
+              '-notext', '-md', 'sha256', '-in', '/dev/stdin', '-out', '/dev/stdout', '-batch',
+              '-subj', subject]
 
 removedchars = [
     "\n",
@@ -49,35 +53,33 @@ certAttributes = {
 
 @app.route("/keysign", methods=["POST"])
 def keysign():
-    response = make_response("Whoops, no pubkey specified!")
+    response = {
+        "success": False,
+        "reason": "Whoops, no pubkey specified!"
+    }
     if ssl_client_verify in request.headers:
-        if "pubkey" in request.form and request.headers[ssl_client_verify] == "NONE":
-            pubkey = "SPKAC="
-            spkac = request.form['pubkey']
-            for char in removedchars:
-                spkac = spkac.replace(char, "")
-            pubkey += spkac
+        body = request.get_json(force=True)
+        if "csr" in body and "CN" in body and request.headers[ssl_client_verify] == "NONE":
+            csr = body['csr']
 
-            certAttributes['CN'] = random.randint(0, 1000)
-            if "CN" in request.form:
-                certAttributes['CN'] = request.form['CN']
-
-            for attribute in certAttributes:
-                pubkey += "\n%s=%s" % (attribute, certAttributes[attribute])
             try:
-                openssl = subprocess.check_output(opensslcmd,
-                                                  input=pubkey.encode('utf-8'))
-                response = make_response(openssl)
-                response.headers['Content-Type'] = "application/x-x509-user-cert"
+                cmd = opensslcmd
+                cmd[-1] += body['CN']
+                openssl = subprocess.check_output(cmd, input=csr.encode('utf-8'))
+                response['cert'] = openssl.decode()
+                response['success'] = True
+                response['CN'] = certAttributes['CN']
             except subprocess.CalledProcessError:
-                response = jsonify({
-                    "result": "OpenSSL command failed",
+                response = {
+                    "reason": "OpenSSL command failed",
                     "command": opensslcmd,
-                    "stdin": pubkey
-                })
+                    "stdin": csr,
+                    "success": False
+                }
         else:
-            return "You silly goose, you already have a certificate! You can't make another one"
-    return response
+            sentry.captureMessage("Got a keysign request with a client cert or invalid body")
+            response['reason'] = "You silly goose, you already have a certificate!"
+    return jsonify(response)
 
 #
 # @app.route('/sign')
