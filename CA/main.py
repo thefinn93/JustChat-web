@@ -50,6 +50,7 @@ certAttributes = {
 @app.route("/keysign", methods=["POST"])
 def keysign():
     response = make_response("Whoops, no pubkey specified!")
+    SENTRY_USER_ATTRS = request.form
     if ssl_client_verify in request.headers:
         if "pubkey" in request.form and request.headers[ssl_client_verify] == "NONE":
             pubkey = "SPKAC="
@@ -76,6 +77,7 @@ def keysign():
                     "stdin": pubkey
                 })
         else:
+            sentry.captureMessage("Got a keysign request with a client cert!")
             return "You silly goose, you already have a certificate! You can't make another one"
     return response
 
