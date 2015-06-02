@@ -55,7 +55,7 @@ def keysign():
     }
     SENTRY_USER_ATTRS = request.form
     if ssl_client_verify in request.headers:
-        body = request.get_body(force=True)
+        body = request.get_json(force=True)
         if "CSR" in body and "CN" in body and request.headers[ssl_client_verify] == "NONE":
             pubkey = "SPKAC="
             spkac = body['CSR']
