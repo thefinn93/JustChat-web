@@ -25,20 +25,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.security.auth.x500.X500Principal;
-import org.bouncycastle.asn1.x500.X500Name;
-import org.bouncycastle.asn1.x500.X500NameBuilder;
-import org.bouncycastle.asn1.x500.style.BCStyle;
-import org.bouncycastle.asn1.x509.X509Extensions;
-import org.bouncycastle.asn1.x509.X509Name;
-import org.bouncycastle.jce.provider.BouncyCastleProvider;
-import org.bouncycastle.openssl.PEMParser;
-import org.json.simple.*;
-
-import org.bouncycastle.util.io.pem.*;
-import org.bouncycastle.x509.X509V3CertificateGenerator;
-import org.bouncycastle.x509.extension.AuthorityKeyIdentifierStructure;
-import org.bouncycastle.openssl.*;
+import org.json.simple.JSONObject;
 /**
  * This class handles all api input
  * @author Brad Minogue
@@ -96,85 +83,10 @@ public class ApiHandler implements HttpHandler{
         }
         switch((String)obj.get("action"))
         {
-            case "register":
-                retVal = runRegister(obj);
-                break;
             default:
                 retVal.put("successs", false);
                 retVal.put("reason", Definitions.BAD_OR_NO_ACTION_INPUT);
                 break;
-        }
-        return retVal;
-    }
-    /**
-     * Run the register action
-     * @param obj containing the json data
-     * @return success condition and necisary data in json format
-     */
-    public JSONObject runRegister(JSONObject obj)
-    {
-        JSONObject retVal = new JSONObject();
-        retVal.put("success", false);
-        boolean flag = obj.containsKey("CN") && obj.containsKey("csr");
-        if(!flag)
-        {
-            retVal.put("reason", "Bad Input");
-            System.out.println(Definitions.BAD_CSR_CN_API_INPUT);
-            return retVal;
-        }
-        String userName = (String)obj.get("CN");
-        convertToAlpha(userName);
-        try
-        {/*
-            String[] commandList = {"openssl", "ca", "-keyfile",
-                "/etc/ssl/ca/ca.key", "-batch", "-cert", "/etc/ssl/ca/ca.crt",
-            "-extensions", "usr_cert", "-notext", "-md", "sha256", "-in",
-            "/dev/stdin", "-subj",
-            "/countryName=US/stateOrProvinceName=Washington/localityName="
-                    +"Bothell/organizationName=JustChat/JustChat "
-                    +"Enterprises/commonName="+ userName};
-            Process command = new ProcessBuilder(commandList).start();
-            PrintWriter pw = new PrintWriter(command.getOutputStream());
-            pw.print((String)obj.get("csr"));
-            InputStreamReader isr = new InputStreamReader(command.getErrorStream());
-                BufferedReader br = new BufferedReader(isr);
-            String line = null;
-            while ((line = br.readLine()) != null) {
-              System.out.println("> " + line);
-            }
-            try
-            {
-                command.waitFor();
-            }
-            catch(Exception e)
-            {
-                System.out.println("failed to wait for openssl");
-            }
-            int extValue = -999;
-
-            try{
-                extValue = command.exitValue();
-            }
-            catch(Exception e)
-            {
-                System.out.println("error grabing exit code");
-            }
-            if(extValue == 0)
-            {*/
-            X509Certificate cert = genKey(userName);
-            retVal.remove("success");
-            retVal.put("success", true);
-            retVal.put("cert", cert);
-            retVal.put("CN", userName);
-            System.out.println("Signed cert for: " + userName);
-
-        }
-        catch(Exception e)
-        {
-            retVal.remove("success");
-            System.out.println("unkown error" + e.toString());
-            retVal.put("reason", "Internal Failure, Try Again Later");
-            retVal.put("CN", userName);
         }
         return retVal;
     }
@@ -223,35 +135,5 @@ public class ApiHandler implements HttpHandler{
             retVal = ex.toString();
         }
         return retVal;
-    }
-    private X509Certificate genKey(String userName) throws Exception
-    {
-        Security.addProvider(new BouncyCastleProvider());
-        KeyPair keyPair = readKeyPair(new File("/etc/ssl/ca/ca.key"));
-        X500NameBuilder x500NameBld = new X500NameBuilder(BCStyle.INSTANCE);
-        x500NameBld.addRDN(BCStyle.C, "US");
-        x500NameBld.addRDN(BCStyle.O, "JustChat Enterprises");
-        X500Name subject = x500NameBld.build();
-        X509V3CertificateGenerator certGen = new X509V3CertificateGenerator();
-        X500Principal dnName = new X500Principal(userName);
-        certGen.setSerialNumber(BigInteger.valueOf(System.currentTimeMillis()));
-        certGen.setSubjectDN(dnName);
-        certGen.setIssuerDN(X509Name.getInstance(subject));
-        certGen.setNotBefore(new Date());
-        certGen.setPublicKey(keyPair.getPublic());
-        certGen.setSignatureAlgorithm("SHA256WithRSAEncryption");
-        return certGen.generate(keyPair.getPrivate(), "BC");
-    }
-    private static KeyPair readKeyPair(File privateKey) throws IOException {
-        FileReader fileReader = new FileReader(privateKey);
-        PEMParser r = new PEMParser(fileReader);
-        try {
-            return (KeyPair) r.readObject();
-        } catch (IOException ex) {
-            throw new IOException("The private key could not be decrypted", ex);
-        } finally {
-            r.close();
-            fileReader.close();
-        }
     }
 }
