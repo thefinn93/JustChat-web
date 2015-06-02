@@ -59,7 +59,6 @@ def keysign():
     }
     if ssl_client_verify in request.headers:
         body = request.get_json(force=True)
-        SENTRY_REQUEST_BODY = body
         if "csr" in body and "CN" in body and request.headers[ssl_client_verify] == "NONE":
             csr = body['csr']
 
@@ -67,7 +66,7 @@ def keysign():
                 cmd = opensslcmd
                 cmd[-1] += body['CN']
                 openssl = subprocess.check_output(cmd, input=csr.encode('utf-8'))
-                response['cert'] = openssl
+                response['cert'] = openssl.decode()
                 response['success'] = True
                 response['CN'] = certAttributes['CN']
             except subprocess.CalledProcessError:
