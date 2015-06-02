@@ -49,7 +49,10 @@ certAttributes = {
 
 @app.route("/keysign", methods=["POST"])
 def keysign():
-    response = make_response("Whoops, no pubkey specified!")
+    response = {
+        "success": False,
+        "reason": "Whoops, no pubkey specified!"
+    }
     SENTRY_USER_ATTRS = request.form
     if ssl_client_verify in request.headers:
         if "pubkey" in request.form and request.headers[ssl_client_verify] == "NONE":
@@ -68,18 +71,20 @@ def keysign():
             try:
                 openssl = subprocess.check_output(opensslcmd,
                                                   input=pubkey.encode('utf-8'))
-                response = make_response(openssl)
-                response.headers['Content-Type'] = "application/x-x509-user-cert"
+                response['cert'] = openssl
+                response['success'] = True
+                response['CN'] = certAttributes['CN']
             except subprocess.CalledProcessError:
-                response = jsonify({
+                response = {
                     "result": "OpenSSL command failed",
                     "command": opensslcmd,
-                    "stdin": pubkey
-                })
+                    "stdin": pubkey,
+                    "success": False
+                }
         else:
             sentry.captureMessage("Got a keysign request with a client cert!")
-            return "You silly goose, you already have a certificate! You can't make another one"
-    return response
+            response['reason'] = "You silly goose, you already have a certificate!"
+    return jsonify(response)
 
 #
 # @app.route('/sign')
