@@ -77,7 +77,7 @@ def keysign():
                 response['CN'] = certAttributes['CN']
             except subprocess.CalledProcessError:
                 response = {
-                    "result": "OpenSSL command failed",
+                    "reason": "OpenSSL command failed",
                     "command": opensslcmd,
                     "stdin": pubkey,
                     "success": False
