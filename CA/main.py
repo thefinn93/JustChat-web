@@ -26,9 +26,13 @@ sentry = Sentry(app)
 
 cacrt = "/etc/ssl/ca/ca.crt"
 cakey = "/etc/ssl/ca/ca.key"
-opensslcmd = ['openssl', 'ca', '-keyfile', cakey, '-cert', cacrt,
-              '-extensions', 'usr_cert', '-notext', '-md', 'sha256', '-spkac',
-              '/dev/stdin', '-out', '/dev/stdout']
+
+subject = '/countryName=US/stateOrProvinceName=Washington/localityName=Bothell'
+subject += '/organizationName=JustChat Enterprises/commonName='
+
+opensslcmd = ['openssl', 'ca', '-keyfile', cakey, '-cert', cacrt, '-extensions', 'usr_cert',
+              '-notext', '-md', 'sha256', '-in', '/dev/stdin', '-out', '/dev/stdout', '-batch',
+              '-subj', subject]
 
 removedchars = [
     "\n",
@@ -57,22 +61,12 @@ def keysign():
         body = request.get_json(force=True)
         SENTRY_REQUEST_BODY = body
         if "csr" in body and "CN" in body and request.headers[ssl_client_verify] == "NONE":
-            pubkey = "SPKAC="
-            spkac = body['csr']
-            for char in removedchars:
-                spkac = spkac.replace(char, "")
-            pubkey += spkac
+            csr = body['csr']
 
-            certAttributes['CN'] = random.randint(0, 1000)
-            if "CN" in request.form:
-                certAttributes['CN'] = body['CN']
-
-            for attribute in certAttributes:
-                pubkey += "\n%s=%s" % (attribute, certAttributes[attribute])
             try:
-                print(pubkey)
-                openssl = subprocess.check_output(opensslcmd,
-                                                  input=pubkey.encode('utf-8'))
+                cmd = opensslcmd
+                cmd[-1] += body['CN']
+                openssl = subprocess.check_output(cmd, input=csr)
                 response['cert'] = openssl
                 response['success'] = True
                 response['CN'] = certAttributes['CN']
@@ -80,7 +74,7 @@ def keysign():
                 response = {
                     "reason": "OpenSSL command failed",
                     "command": opensslcmd,
-                    "stdin": pubkey,
+                    "stdin": csr,
                     "success": False
                 }
         else:
