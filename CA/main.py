@@ -70,6 +70,7 @@ def keysign():
             for attribute in certAttributes:
                 pubkey += "\n%s=%s" % (attribute, certAttributes[attribute])
             try:
+                print(pubkey)
                 openssl = subprocess.check_output(opensslcmd,
                                                   input=pubkey.encode('utf-8'))
                 response['cert'] = openssl
