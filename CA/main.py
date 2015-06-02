@@ -55,7 +55,7 @@ def keysign():
     }
     SENTRY_USER_ATTRS = request.form
     if ssl_client_verify in request.headers:
-        if "pubkey" in request.form and request.headers[ssl_client_verify] == b"NONE":
+        if "pubkey" in request.form and request.headers[ssl_client_verify] == "NONE":
             pubkey = "SPKAC="
             spkac = request.form['pubkey']
             for char in removedchars:
@@ -82,6 +82,7 @@ def keysign():
                     "success": False
                 }
         else:
+            print(request.headers[ssl_client_verify])
             sentry.captureMessage("Got a keysign request with a client cert!")
             response['reason'] = "You silly goose, you already have a certificate!"
     return jsonify(response)
