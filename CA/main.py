@@ -55,7 +55,7 @@ def keysign():
     }
     SENTRY_USER_ATTRS = request.form
     if ssl_client_verify in request.headers:
-        if "pubkey" in request.form and request.headers[ssl_client_verify] == "NONE":
+        if "pubkey" in request.form and request.headers[ssl_client_verify] == b"NONE":
             pubkey = "SPKAC="
             spkac = request.form['pubkey']
             for char in removedchars:
