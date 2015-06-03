@@ -60,7 +60,13 @@ public class ApiHandler implements HttpHandler {
                 System.out.println(he.getRequestBody());
                 if(obj != null)
                 {
-                    response += switchAction(obj, userName).toString();
+                    JSONObject ob = switchAction(obj, userName);
+                    if(ob == null || ob.isEmpty())
+                    {
+                        ob = new JSONObject();
+                        ob.put("success", false);
+                        ob.put("reason", "bad api input");
+                    }
                 }
                 else
                 {
