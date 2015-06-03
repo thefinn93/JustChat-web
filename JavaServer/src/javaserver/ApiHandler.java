@@ -9,6 +9,7 @@ import java.io.OutputStream;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Scanner;
 import java.util.Set;
 import org.json.simple.JSONObject;
 /**
@@ -48,7 +49,11 @@ public class ApiHandler implements HttpHandler {
                 ob.put("reason", "bad ssl");
                 response = ob.toString();
         }
-        System.out.println(he.getRequestBody());
+        Scanner scn = new Scanner(he.getRequestBody());
+        while(scn.hasNext())
+        {
+            response += scn.nextLine();
+        }
         if(response == null)
             try{
                 JSONObject obj = JSONHelper.convertToJson(he.getRequestBody());
