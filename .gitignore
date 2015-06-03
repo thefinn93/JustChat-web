@@ -13,3 +13,11 @@ JavaServer/nbdist/
 JavaServer/nbactions.xml
 JavaServer/nb-configuration.xml
 JavaServer/.nb-gradle/
+
+# Class Files #
+*.class
+
+# Package Files #
+*.jar
+*.war
+*.ear
