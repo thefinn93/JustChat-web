@@ -73,14 +73,14 @@ public class ApiHandler implements HttpHandler {
                     obj = new JSONObject();
                     obj.put("reason", Definitions.NO_API_INPUT);
                     response += obj.toString();
-                    System.out.println(Definitions.NO_API_INPUT);
+                    // System.out.println(Definitions.NO_API_INPUT);
                 }
             }
             catch(Exception e)
             {
                 response = e.toString();
             }
-        System.out.println(response);
+        // System.out.println(response);
         he.sendResponseHeaders(200, response.length());
         OutputStream oout = he.getResponseBody();
         oout.write(response.getBytes());
@@ -100,7 +100,7 @@ public class ApiHandler implements HttpHandler {
         {
             retVal.put("success", false);
             retVal.put("reason", "Bad Input");;
-            System.out.println(Definitions.BAD_OR_NO_ACTION_INPUT);
+            // System.out.println(Definitions.BAD_OR_NO_ACTION_INPUT);
             return retVal;
         }
         if(!obj.containsKey(Definitions.SSL_CLIENT_VERIFY) ||
