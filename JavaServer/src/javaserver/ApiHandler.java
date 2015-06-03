@@ -48,12 +48,13 @@ public class ApiHandler implements HttpHandler {
                 ob.put("reason", "bad ssl");
                 response = ob.toString();
         }
+        String request = "";
         Scanner scn = new Scanner(he.getRequestBody());
         while(scn.hasNext())
         {
-            response += scn.nextLine();
+            request += scn.nextLine();
         }
-        System.out.println(userName + " > " + he.getRequestBody());
+        System.out.println(userName + " > " + request);
         if(response == null)
             try{
                 JSONObject obj = JSONHelper.convertToJson(he.getRequestBody());
