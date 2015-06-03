@@ -64,6 +64,7 @@ public class Channel {
         if(!users.contains(user))
             return false;
         log.add(new Message(user,message,time));
+        System.out.println("[" + this.CHANNEL_NAME + "]<" + user + ">" + message);
         return true;
     }
 }
