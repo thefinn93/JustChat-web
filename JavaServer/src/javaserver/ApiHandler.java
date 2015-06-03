@@ -44,14 +44,6 @@ public class ApiHandler implements HttpHandler {
         {
                 response.put("reason", "Bad SSL: " + e.toString());
         }
-        // String request = "";
-        // Scanner scn = new Scanner(he.getRequestBody());
-        // while(scn.hasNext())
-        // {
-        //     request += scn.nextLine();
-        // }
-        // System.out.println(userName + " > " + request);
-
 
         // We were checking if something up there ^ failed in a really poor way. we should
         // instead call this code from the if statement when we have a username.
@@ -59,7 +51,7 @@ public class ApiHandler implements HttpHandler {
             JSONObject request = JSONHelper.convertToJson(he.getRequestBody());
             if(request != null)
             {
-                switchAction(request, userName);
+                response = switchAction(request, userName);
                 if(response == null || response.isEmpty())
                 {
                     response.put("reason", "Failed to switch action");
