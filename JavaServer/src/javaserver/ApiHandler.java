@@ -52,6 +52,7 @@ public class ApiHandler implements HttpHandler {
         if(response == null)
             try{
                 JSONObject obj = JSONHelper.convertToJson(he.getRequestBody());
+                System.out.println(obj.toString());
                 if(obj != null)
                 {
                     response += switchAction(obj, userName).toString();
@@ -77,6 +78,7 @@ public class ApiHandler implements HttpHandler {
     /**
      * This function switches to the aproriate function based on action
      * @param obj
+     * @param user
      * @return
      */
     public JSONObject switchAction(JSONObject obj, String user)
