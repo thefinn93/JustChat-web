@@ -5,4 +5,11 @@ lib/
 *.pyc
 
 # Java Crap
-JavaServer/build
+JavaServer/build/
+JavaServer/nbproject/private/
+JavaServer/dist/
+JavaServer/nbbuild/
+JavaServer/nbdist/
+JavaServer/nbactions.xml
+JavaServer/nb-configuration.xml
+JavaServer/.nb-gradle/
