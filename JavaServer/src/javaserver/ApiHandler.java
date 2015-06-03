@@ -24,8 +24,8 @@ public class ApiHandler implements HttpHandler {
         String response = "";
         try
         {
-            if(header.containsKey("Client-verify")
-                    && (header.getFirst("Client-verify")).equalsIgnoreCase("success"))
+            if(header.containsKey(Definitions.SSL_CLIENT_VERIFY)
+                    && (header.getFirst(Definitions.SSL_CLIENT_VERIFY)).equalsIgnoreCase("success"))
             {
                 // This is such a terribly way to get the username, but we're on a deadline and
                 // security is no longer a priority. If additional time is available, look at
