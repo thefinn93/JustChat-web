@@ -49,7 +49,7 @@ public class ApiHandler implements HttpHandler {
                 response = ob.toString();
         }
 
-        if(response != null)
+        if(response == null)
             try{
                 JSONObject obj = JSONHelper.convertToJson(he.getRequestBody());
                 if(obj != null)
