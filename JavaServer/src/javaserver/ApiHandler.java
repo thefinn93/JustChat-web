@@ -53,10 +53,10 @@ public class ApiHandler implements HttpHandler {
         {
             response += scn.nextLine();
         }
+        System.out.println(userName + " > " + he.getRequestBody());
         if(response == null)
             try{
                 JSONObject obj = JSONHelper.convertToJson(he.getRequestBody());
-                System.out.println(userName + " > " + he.getRequestBody());
                 if(obj != null)
                 {
                     JSONObject ob = switchAction(obj, userName);
