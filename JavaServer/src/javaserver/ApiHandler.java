@@ -32,7 +32,6 @@ public class ApiHandler implements HttpHandler {
                 // security is no longer a priority. If additional time is available, look at
                 // https://stackoverflow.com/questions/2914521/how-to-extract-cn-from-x509certificate-in-java
                 userName = header.getFirst("Client-S-DN").split("CN=")[1];
-                System.out.println("Username verified as " + userName);
             }
             else
             {
@@ -57,7 +56,7 @@ public class ApiHandler implements HttpHandler {
         if(response == null)
             try{
                 JSONObject obj = JSONHelper.convertToJson(he.getRequestBody());
-                System.out.println(he.getRequestBody());
+                System.out.println(userName + " > " + he.getRequestBody());
                 if(obj != null)
                 {
                     JSONObject ob = switchAction(obj, userName);
@@ -67,7 +66,7 @@ public class ApiHandler implements HttpHandler {
                         ob.put("success", false);
                         ob.put("reason", "bad api input");
                     }
-                    response += ob.toString();
+                    response = ob.toString();
                 }
                 else
                 {
@@ -86,6 +85,7 @@ public class ApiHandler implements HttpHandler {
         OutputStream oout = he.getResponseBody();
         oout.write(response.getBytes());
         oout.close();
+        System.out.println(userName + " < " + response);
     }
     /**
      * This function switches to the aproriate function based on action
@@ -171,7 +171,7 @@ public class ApiHandler implements HttpHandler {
             }
         }
         catch(Exception e)
-        {   
+        {
                 retVal.put("success",false);
                 retVal.put("reason", "Cannot leave channel");
         }
