@@ -22,7 +22,9 @@ public class ApiHandler implements HttpHandler {
         Headers header = he.getRequestHeaders();
         Set<Map.Entry<String, List<String>>> params = header.entrySet();
         String userName = null;
-        String response = "";
+        JSONObject response = new JSONObject();
+        response.put("success", false);
+        response.put("reason", "An unknown error occured");
         try
         {
             if(header.containsKey(Definitions.SSL_CLIENT_VERIFY)
@@ -35,58 +37,50 @@ public class ApiHandler implements HttpHandler {
             }
             else
             {
-                JSONObject ob = new JSONObject();
-                ob.put("success", false);
-                ob.put("reason", "bad verify");
-                response = ob.toString();
+                response.put("reason", "bad verify");
             }
         }
         catch(Exception e)
         {
-                JSONObject ob = new JSONObject();
-                ob.put("success", false);
-                ob.put("reason", "bad ssl");
-                response = ob.toString();
+                response.put("reason", "Bad SSL: " + e.toString());
         }
-        String request = "";
-        Scanner scn = new Scanner(he.getRequestBody());
-        while(scn.hasNext())
-        {
-            request += scn.nextLine();
-        }
-        System.out.println(userName + " > " + request);
-        if(response == null)
-            try{
-                JSONObject obj = JSONHelper.convertToJson(he.getRequestBody());
-                if(obj != null)
-                {
-                    JSONObject ob = switchAction(obj, userName);
-                    if(ob == null || ob.isEmpty())
-                    {
-                        ob = new JSONObject();
-                        ob.put("success", false);
-                        ob.put("reason", "bad api input");
-                    }
-                    response = ob.toString();
-                }
-                else
-                {
-                    obj = new JSONObject();
-                    obj.put("reason", Definitions.NO_API_INPUT);
-                    response += obj.toString();
-                    // System.out.println(Definitions.NO_API_INPUT);
-                }
-            }
-            catch(Exception e)
+        // String request = "";
+        // Scanner scn = new Scanner(he.getRequestBody());
+        // while(scn.hasNext())
+        // {
+        //     request += scn.nextLine();
+        // }
+        // System.out.println(userName + " > " + request);
+
+
+        // We were checking if something up there ^ failed in a really poor way. we should
+        // instead call this code from the if statement when we have a username.
+        try {
+            JSONObject request = JSONHelper.convertToJson(he.getRequestBody());
+            if(request != null)
             {
-                response = e.toString();
+                switchAction(request, userName);
+                if(response == null || response.isEmpty())
+                {
+                    response.put("reason", "Failed to switch action");
+                }
             }
-        // System.out.println(response);
-        he.sendResponseHeaders(200, response.length());
+            else
+            {
+                response.put("reason", Definitions.NO_API_INPUT);
+            }
+        }
+        catch(Exception e)
+        {
+            response.put("reason", "Failed to switch action: " + e.toString());
+        }
+
+        String responseString = response.toString();
+        System.out.println(userName + " < " + responseString);
+        he.sendResponseHeaders(200, responseString.length());
         OutputStream oout = he.getResponseBody();
-        oout.write(response.getBytes());
+        oout.write(responseString.getBytes());
         oout.close();
-        System.out.println(userName + " < " + response);
     }
     /**
      * This function switches to the aproriate function based on action
@@ -94,89 +88,81 @@ public class ApiHandler implements HttpHandler {
      * @param user
      * @return
      */
-    public JSONObject switchAction(JSONObject obj, String user)
+    public JSONObject switchAction(JSONObject request, String username)
     {
-        JSONObject retVal = new JSONObject();
-        if(!obj.containsKey("action"))
+        JSONObject response = new JSONObject();
+        response.put("success", false);
+        response.put("reason", "Unknown failure with switchAction()");
+        if(!request.containsKey("action"))
         {
-            retVal.put("success", false);
-            retVal.put("reason", "Bad Input");;
-            // System.out.println(Definitions.BAD_OR_NO_ACTION_INPUT);
-            return retVal;
+            response.put("reason", "No action key");
+            return response;
         }
-        if(!obj.containsKey(Definitions.SSL_CLIENT_VERIFY) ||
-                ((String)obj.get(Definitions.SSL_CLIENT_VERIFY)).equalsIgnoreCase("success"))
-        {
-            retVal.put("success", false);
-            retVal.put("reason","Invalid User");
-            return retVal;
-        }
-        switch((String)obj.get("action"))
+        switch((String)request.get("action"))
         {
             case "getmsg":
-                retVal = getMessages(obj, user);
+                response = getMessages(request, username);
                 break;
             case "sendmsg":
-                retVal = sendMessage(obj, user);
+                response = sendMessage(request, username);
                 break;
             case "join":
-                retVal = joinChannel(obj, user);
+                response = joinChannel(request, username);
                 break;
             case "leave":
-                retVal = leaveChannel(obj, user);
+                response = leaveChannel(request, username);
                 break;
             default:
-                retVal.put("successs", false);
-                retVal.put("reason", Definitions.BAD_OR_NO_ACTION_INPUT);
+                response.put("reason", Definitions.BAD_OR_NO_ACTION_INPUT);
                 break;
         }
-        return retVal;
+        return response;
     }
-    private JSONObject sendMessage(JSONObject req, String user)
+
+    private JSONObject sendMessage(JSONObject req, String username)
     {
-        JSONObject retVal = new JSONObject();
-                retVal.put("action","sendmsg");
+        JSONObject response = new JSONObject();
+        response.put("success",false);
+        response.put("action","sendmsg");
         try
         {
-            if(JavaServer.chat.sendMessage((String)req.get("channel"), user, (String)req.get("message"), (Date)req.get("date")))
+            if(JavaServer.chat.sendMessage((String)req.get("channel"), username, (String)req.get("message"), (Date)req.get("date")))
             {
-                retVal.put("success",true);
+                response.put("success",true);
             }
             else
             {
-                retVal.put("success",false);
-                retVal.put("reason", "Bad api input");
+                response.put("reason", "Failed to send message, no good reason provided");
             }
         }
         catch(Exception e)
         {
-                retVal.put("success",false);
-                retVal.put("reason", "Cannot send message");
+            response.put("reason", "Cannot send message: " + e.toString());
         }
-        return retVal;
+        return response;
     }
     private JSONObject leaveChannel(JSONObject req, String user)
     {
-        JSONObject retVal = new JSONObject();
-                retVal.put("action","leave");
+        JSONObject response = new JSONObject();
+        response.put("action", "leave");
+        response.put("success", false);
+        response.put("reason", "Unknown error in leaveChannel");
         try
         {
             if(JavaServer.chat.leaveChannel(user, (String)req.get("Channel")))
             {
-                retVal.put("success",true);
+                response.put("success", true);
             }
             else
             {
-                retVal.put("success",false);
-                retVal.put("reason", "Bad api input");
+                response.put("reason", "Failed to join channel. We don't know why. Debugging is for n00bs.");
             }
         }
         catch(Exception e)
         {
-                retVal.put("success",false);
-                retVal.put("reason", "Cannot leave channel");
+            response.put("reason", "Failed to leave channel: " + e.toString());
         }
-        return retVal;
+        return response;
     }
     private JSONObject joinChannel(JSONObject req, String user)
     {
