@@ -68,6 +68,7 @@ public class ApiHandler implements HttpHandler {
             {
                 response = e.toString();
             }
+        System.out.println(response);
         he.sendResponseHeaders(200, response.length());
         OutputStream oout = he.getResponseBody();
         oout.write(response.getBytes());
@@ -119,7 +120,7 @@ public class ApiHandler implements HttpHandler {
     private JSONObject sendMessage(JSONObject req, String user)
     {
         JSONObject retVal = new JSONObject();
-                retVal.put("action","join");
+                retVal.put("action","sendMessage");
         try
         {
             if(JavaServer.chat.sendMessage((String)req.get("Channel"), user, (String)req.get("Message"), (Date)req.get("Date")))
@@ -137,7 +138,7 @@ public class ApiHandler implements HttpHandler {
     private JSONObject leaveChannel(JSONObject req, String user)
     {
         JSONObject retVal = new JSONObject();
-                retVal.put("action","join");
+                retVal.put("action","leave");
         try
         {
             if(JavaServer.chat.leaveChannel(user, (String)req.get("Channel")))
@@ -146,7 +147,7 @@ public class ApiHandler implements HttpHandler {
             }
         }
         catch(Exception e)
-        {
+        {   
                 retVal.put("success",false);
                 retVal.put("reason", "Cannot leave channel");
         }
