@@ -67,6 +67,7 @@ public class ApiHandler implements HttpHandler {
                         ob.put("success", false);
                         ob.put("reason", "bad api input");
                     }
+                    response += ob.toString();
                 }
                 else
                 {
