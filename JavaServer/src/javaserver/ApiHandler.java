@@ -98,10 +98,10 @@ public class ApiHandler implements HttpHandler {
         }
         switch((String)obj.get("action"))
         {
-            case "getMessage":
+            case "getmsg":
                 retVal = getMessages(obj, user);
                 break;
-            case "sendMessage":
+            case "sendmsg":
                 retVal = sendMessage(obj, user);
                 break;
             case "join":
@@ -120,12 +120,17 @@ public class ApiHandler implements HttpHandler {
     private JSONObject sendMessage(JSONObject req, String user)
     {
         JSONObject retVal = new JSONObject();
-                retVal.put("action","sendMessage");
+                retVal.put("action","sendmsg");
         try
         {
-            if(JavaServer.chat.sendMessage((String)req.get("Channel"), user, (String)req.get("Message"), (Date)req.get("Date")))
+            if(JavaServer.chat.sendMessage((String)req.get("channel"), user, (String)req.get("message"), (Date)req.get("date")))
             {
                 retVal.put("success",true);
+            }
+            else
+            {
+                retVal.put("success",false);
+                retVal.put("reason", "Bad api input");
             }
         }
         catch(Exception e)
@@ -145,6 +150,11 @@ public class ApiHandler implements HttpHandler {
             {
                 retVal.put("success",true);
             }
+            else
+            {
+                retVal.put("success",false);
+                retVal.put("reason", "Bad api input");
+            }
         }
         catch(Exception e)
         {   
@@ -163,6 +173,11 @@ public class ApiHandler implements HttpHandler {
             {
                 retVal.put("success",true);
             }
+            else
+            {
+                retVal.put("success",false);
+                retVal.put("reason", "Bad api input");
+            }
         }
         catch(Exception e)
         {
@@ -177,11 +192,11 @@ public class ApiHandler implements HttpHandler {
         try
         {
             retVal = JavaServer.chat.getMessages(user, (Date)req.get("Date"));
-            retVal.put("action", "getMessages");
+            retVal.put("action", "getmsg");
         }
         catch(Exception e)
         {
-            retVal.put("action", "getMessages");
+            retVal.put("action", "getmsg");
             retVal.put("success", false);
             retVal.put("reason", "Invalid Input on Client App");
         }

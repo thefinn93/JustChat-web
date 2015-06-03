@@ -16,6 +16,8 @@ public class ChatLogic {
     }
     public boolean joinChannel(String user, String channel)
     {
+        if(channel == null || user == null)
+            return false;
         for(Channel current : channels)
         {
             if(current.CHANNEL_NAME.equalsIgnoreCase(channel))
@@ -30,6 +32,8 @@ public class ChatLogic {
     }
     public boolean leaveChannel(String user, String channel)
     {
+        if(channel == null || user == null)
+            return false;
         for(Channel current : channels)
         {
             if(current.CHANNEL_NAME.equalsIgnoreCase(channel))
@@ -39,6 +43,8 @@ public class ChatLogic {
     }
     public boolean sendMessage( String channel,String user, String message, Date time)
     {
+        if(channel == null || user == null || message == null || time == null)
+            return false;
         for(Channel current : channels)
         {
             if(current.CHANNEL_NAME.equalsIgnoreCase(channel))
@@ -52,6 +58,11 @@ public class ChatLogic {
     {
         JSONObject retVal = new JSONObject();
         retVal.put("action", "getMessages");
+        if(user == null || time == null)
+        {
+            retVal.put("success", false);
+            retVal.put("reason", "invalid getMessages input");
+        }
         JSONArray messages = new JSONArray();
         for(Channel current : channels)
         {
