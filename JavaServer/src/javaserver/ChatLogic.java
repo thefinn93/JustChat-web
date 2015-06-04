@@ -89,7 +89,6 @@ public class ChatLogic {
                 retVal = current.getActionsToTake();
             }
         }
-        System.out.println(retVal);
         return retVal;
     }
 }

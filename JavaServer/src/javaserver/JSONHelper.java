@@ -79,7 +79,6 @@ public class JSONHelper {
         {
             JSONArray values = (JSONArray) obj.get("Client-verify");
             LinkedList subValues = (LinkedList) values.get(0);
-            System.out.println(subValues.get(0));
             retVal = values != null && ((String)subValues.get(0))
                     .equalsIgnoreCase("SUCCESS");
         }
