@@ -94,7 +94,7 @@ public class ApiHandler implements HttpHandler {
         switch((String)request.get("action"))
         {
             case "refresh":
-                response = JavaServer.chat.getUpdate(username);
+                response.put("actions", JavaServer.chat.getUpdate(username));
                 response.put("success", true);
                 response.put("reason", "refreshed");
                 break;

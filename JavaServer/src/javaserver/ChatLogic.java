@@ -80,21 +80,15 @@ public class ChatLogic {
         return "No channel exists under that name";
     }
 
-    public JSONObject getUpdate(String user)
+    public JSONArray getUpdate(String user)
     {
-        JSONObject retVal = new JSONObject();
-        if(user == null)
-        {
-            retVal.put("action", "refresh");
-            retVal.put("success", false);
-            retVal.put("reason", "User is null");
-        }
+        JSONArray retVal = null;
         JSONArray messages = new JSONArray();
         for(User current : glbUser)
         {
             if(current.USER_NAME.equalsIgnoreCase(user))
             {
-                retVal.put("actions", current.getActionsToTake());
+                retVal = current.getActionsToTake();
             }
         }
         return retVal;
