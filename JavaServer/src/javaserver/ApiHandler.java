@@ -48,7 +48,7 @@ public class ApiHandler implements HttpHandler {
         // We were checking if something up there ^ failed in a really poor way. we should
         // instead call this code from the if statement when we have a username.
         try {
-            JSONObject request = new JSONObject(he.getRequestBody());
+            JSONObject request = JSONHelper.convertToJson(he.getRequestBody());
             System.out.println(userName + " > " + request.toString());
             if(request != null)
             {
