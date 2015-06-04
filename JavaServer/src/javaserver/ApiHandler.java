@@ -126,7 +126,6 @@ public class ApiHandler implements HttpHandler {
             else
             {
                 response.put("reason", "Failed to send message, no good reason provided");
-                response.put("request", req);
             }
         }
         catch(Exception e)
