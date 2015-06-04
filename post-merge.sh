@@ -14,7 +14,7 @@ echo "/j #justchat" > /home/admin/spambot/chat.freenode.net/in
 cd /usr/local/src/JustChat-web/JavaServer
 
 
-ant -f netbeanless.xml 2>&1 | curl -F 'sprunge=<-' http://sprunge.us > /tmp/channelspam
+ant -f netbeanless.xml #2>&1  | curl -F 'sprunge=<-' http://sprunge.us > /tmp/channelspam
 
 # Finally, restart the server so the changes get executed
 supervisorctl restart javaserver
