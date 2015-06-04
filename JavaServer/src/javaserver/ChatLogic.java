@@ -88,6 +88,8 @@ public class ChatLogic {
             if(current.USER_NAME.equalsIgnoreCase(user))
             {
                 retVal = current.getActionsToTake();
+            } else {
+              System.out.println(current.USER_NAME + " != " + user);
             }
         }
         return retVal;
