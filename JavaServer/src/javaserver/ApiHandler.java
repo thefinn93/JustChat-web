@@ -127,14 +127,14 @@ public class ApiHandler implements HttpHandler {
         try
         {
             String reason = JavaServer.chat.sendMessage(req.getString("channel"), username, req.getString("message"));
-            if( reason != null)
+            if( reason == null)
             {
                 response.put("success", true);
                 response.put("reason", "sent message");
             }
             else
             {
-                response.put("reason", "Missing some stuff. We need channel, username and message");
+                response.put("reason", reason);
             }
         }
         catch(Exception e)
