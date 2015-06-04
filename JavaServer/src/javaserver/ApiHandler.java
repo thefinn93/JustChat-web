@@ -118,7 +118,7 @@ public class ApiHandler implements HttpHandler {
         response.put("action","sendmsg");
         try
         {
-            if(JavaServer.chat.sendMessage((String)req.get("channel"), username, (String)req.get("message"), (Date)req.get("date")))
+            if(JavaServer.chat.sendMessage((String)req.get("channel"), username, (String)req.get("message")))
             {
                 response.put("success",true);
             }

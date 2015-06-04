@@ -41,8 +41,9 @@ public class ChatLogic {
         }
         return false;
     }
-    public boolean sendMessage( String channel,String user, String message, Date time)
+    public boolean sendMessage(String channel, String user, String message)
     {
+        Date time = new Date();
         if(channel == null || user == null || message == null || time == null)
             return false;
         for(Channel current : channels)
@@ -54,6 +55,7 @@ public class ChatLogic {
         }
         return false;
     }
+
     public JSONObject getMessages(String user, Date time)
     {
         JSONObject retVal = new JSONObject();
