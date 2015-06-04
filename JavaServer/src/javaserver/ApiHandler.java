@@ -68,8 +68,8 @@ public class ApiHandler implements HttpHandler {
             response.put("reason", "Failed to switch action: " + e.toString());
         }
 
-        if(username != null) {
-          response.put("actions", JavaServer.chat.getUpdate(username));
+        if(userName != null) {
+          response.put("actions", JavaServer.chat.getUpdate(userName));
         } else {
           System.out.println("username is null");
         }
