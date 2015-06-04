@@ -45,14 +45,12 @@ public class ChatLogic {
     {
         Date time = new Date();
         if(channel == null || user == null || message == null || time == null)
-            System.out.println("Channel: " + channel);
-            System.out.println("User: " + user);
-            System.out.println("Message: " + message);
             return false;
         for(Channel current : channels)
         {
             if(current.CHANNEL_NAME.equalsIgnoreCase(channel))
             {
+                System.out.println(username + " sent to " + channel);
                 return current.addMessage(user, message, time);
             }
         }
