@@ -78,7 +78,7 @@ public class Channel {
         JSONObject actionUpdate = new JSONObject();
         actionUpdate.put("action", "sendmsg");
         actionUpdate.put("username", userName);
-        actionUpdate.put("channel", userName);
+        actionUpdate.put("channel", this.CHANNEL_NAME);
         actionUpdate.put("message", message);
         for(User current : users)
         {
