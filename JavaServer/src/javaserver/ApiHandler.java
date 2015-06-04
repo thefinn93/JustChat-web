@@ -122,19 +122,19 @@ public class ApiHandler implements HttpHandler {
     private JSONObject sendMessage(JSONObject req, String username)
     {
         JSONObject response = new JSONObject();
-        response.put("success",false);
-        response.put("action","sendmsg");
+        response.put("success", false);
+        response.put("reason", "Something bad happened in the sendMessage() function.");
         try
         {
             String reason = JavaServer.chat.sendMessage((String)req.get("channel"), username, (String)req.get("message"));
             if( reason != null)
             {
-                response.put("success",true);
-                response.put("reason", "joined channel");
+                response.put("success", true);
+                response.put("reason", "sent message");
             }
             else
             {
-                response.put("reason", reason);
+                response.put("reason", "Missing some stuff. We need channel, username and message");
             }
         }
         catch(Exception e)
@@ -143,6 +143,7 @@ public class ApiHandler implements HttpHandler {
         }
         return response;
     }
+
     private JSONObject leaveChannel(JSONObject req, String user)
     {
         JSONObject response = new JSONObject();
