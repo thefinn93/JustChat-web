@@ -130,7 +130,7 @@ public class ApiHandler implements HttpHandler {
             if( reason == null)
             {
                 response.put("success", true);
-                response.put("reason", "sent message");
+                response.put("reason", "Message successfully sent");
             }
             else
             {
