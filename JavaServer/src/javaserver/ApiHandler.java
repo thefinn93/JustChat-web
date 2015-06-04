@@ -49,6 +49,7 @@ public class ApiHandler implements HttpHandler {
         // instead call this code from the if statement when we have a username.
         try {
             JSONObject request = JSONHelper.convertToJson(he.getRequestBody());
+            System.out.println(username + " > " + request.toString());
             if(request != null)
             {
                 response = switchAction(request, userName);
