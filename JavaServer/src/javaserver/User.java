@@ -31,8 +31,8 @@ public class User {
         {
             retVal.add(i, actions.get(i).toString());
         }
-        emptyActions();
-        return retVal;
+        //emptyActions();
+        return actions;
     }
     private void emptyActions()
     {
