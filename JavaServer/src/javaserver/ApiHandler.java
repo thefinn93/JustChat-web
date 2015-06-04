@@ -162,14 +162,14 @@ public class ApiHandler implements HttpHandler {
                 retVal.put("action","join");
         try
         {
-            if(JavaServer.chat.joinChannel(user, (String)req.get("Channel")))
+            if(JavaServer.chat.joinChannel(user, (String)req.get("channel")))
             {
                 retVal.put("success",true);
             }
             else
             {
                 retVal.put("success",false);
-                retVal.put("reason", "Bad api input");
+                retVal.put("reason", "Failed to join channel, no good reason given");
             }
         }
         catch(Exception e)
