@@ -7,7 +7,7 @@ package javaserver;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
-
+import org.json.simple.JSONValue;
 /**
  *
  * @author minogb
@@ -26,7 +26,11 @@ public class User {
     }
     public JSONArray getActionsToTake()
     {
-        JSONArray retVal = (JSONArray)actions.clone();
+        JSONArray retVal = new JSONArray();
+        for(int i = 0; i < actions.size(); i++)
+        {
+            retVal.add(i, actions.get(i).toString());
+        }
         emptyActions();
         return retVal;
     }
