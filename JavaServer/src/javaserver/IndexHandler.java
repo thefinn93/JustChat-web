@@ -5,7 +5,7 @@ import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import java.io.IOException;
 import java.io.OutputStream;
-import org.json.simple.*;
+import org.json.*;
 
 /**
  *
@@ -28,7 +28,7 @@ public class IndexHandler  implements HttpHandler{
             if(!JSONHelper.checkSsl(obj))
             {
                 //ask the user to generate a key
-                response += Definitions.ENDL + 
+                response += Definitions.ENDL +
                     "Please install the JustChap app to use this service."
                         +" To play with client-SSL certificates, start"
                         + "by <a href=\"/keygen\">generating a key </a>";
@@ -49,5 +49,5 @@ public class IndexHandler  implements HttpHandler{
         oout.write(response.getBytes());
         oout.close();
     }
-    
+
 }

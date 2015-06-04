@@ -5,9 +5,9 @@
  */
 package javaserver;
 
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
-import org.json.simple.JSONValue;
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 /**
  *
  * @author minogb
@@ -21,16 +21,16 @@ public class User {
     }
     public String addActionToTake(JSONObject newAct)
     {
-        actions.add(newAct);
+        actions.put(newAct);
         return null;
     }
     public JSONArray getActionsToTake()
     {
         JSONArray retVal = new JSONArray();
-        System.out.println("Action size: " + actions.size());
-        for(int i = 0; i < actions.size(); i++)
+        System.out.println("Action size: " + actions.length());
+        for(int i = 0; i < actions.length(); i++)
         {
-            retVal.add(i, actions.get(i).toString());
+            retVal.put(i, actions.get(i).toString());
         }
         emptyActions();
         return retVal;
@@ -39,7 +39,7 @@ public class User {
     {
         try
         {
-            for(int i = 0; i < actions.size(); i++)
+            for(int i = 0; i < actions.length(); i++)
                 actions.remove(i);
         }
         catch(Exception e)

@@ -6,21 +6,23 @@
 	<get dest="./build/json-simple-1.1.1.jar" usetimestamp="true">
 		<url url="http://json-simple.googlecode.com/files/json-simple-1.1.1.jar"/>
 	</get>
+  <get dest="./build/org.json.jar" usetimestamp="true">
+    <url url="http://central.maven.org/maven2/org/json/json/20141113/json-20141113.jar" />
+  </get>
 	<javac srcdir="./src/javaserver/"
 		destdir="./build/classes/"
 		>
 		<classpath>
 			<fileset dir="./build/">
-				<include name= "json-simple-1.1.1.jar"/>
+				<include name= "org.json.jar"/>
 			</fileset>
 		</classpath>
 	</javac>
 	<jar destfile="./dist/JustChatServer.jar" basedir="./build/classes">
-        	<zipfileset src="./build/json-simple-1.1.1.jar" excludes="META-INF/*" />
+        	<zipfileset src="./build/org.json.jar" excludes="META-INF/*" />
 		<manifest>
-			<attribute name="Class-Path" value="./build/json-simple-1.1.1.jar"/>
+			<attribute name="Class-Path" value="./build/org.json.jar"/>
             		<attribute name="Main-Class" value="javaserver.JavaServer"/>
 		</manifest>
 	</jar>
 </project>
-

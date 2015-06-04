@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
 import java.util.Set;
-import org.json.simple.JSONObject;
+import org.json.JSONObject;
 /**
  * This class handles all api input
  * @author Brad Minogue
@@ -48,12 +48,12 @@ public class ApiHandler implements HttpHandler {
         // We were checking if something up there ^ failed in a really poor way. we should
         // instead call this code from the if statement when we have a username.
         try {
-            JSONObject request = JSONHelper.convertToJson(he.getRequestBody());
+            JSONObject request = new JSONObject(he.getRequestBody());
             System.out.println(userName + " > " + request.toString());
             if(request != null)
             {
                 response = switchAction(request, userName);
-                if(response == null || response.isEmpty())
+                if(response == null)
                 {
                     response.put("reason", "Failed to switch action");
                 }
@@ -92,7 +92,7 @@ public class ApiHandler implements HttpHandler {
         JSONObject response = new JSONObject();
         response.put("success", false);
         response.put("reason", "Unknown failure with switchAction()");
-        if(!request.containsKey("action"))
+        if(!request.has("action"))
         {
             response.put("reason", "No action key");
             return response;

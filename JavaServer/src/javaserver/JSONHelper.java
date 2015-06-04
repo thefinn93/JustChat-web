@@ -11,10 +11,9 @@ import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
+import org.json.JSONArray;
+import org.json.JSONObject;
+import org.json.JSONException;
 
 /**
  * @author Brad Minogue
@@ -28,7 +27,7 @@ public class JSONHelper {
         {
             //For every value can contain an array of subvalues/keys
             JSONArray subValue = new JSONArray();
-            subValue.add(part.getValue());
+            subValue.put(part.getValue());
             obj.put(part.getKey(), subValue);
         }
         return obj;
@@ -36,8 +35,6 @@ public class JSONHelper {
     public static JSONObject convertToJson(InputStream body)
     {
         JSONObject obj = new JSONObject();
-        JSONParser parser = new JSONParser();
-        Object o = null;
         BufferedReader br = new BufferedReader(new InputStreamReader(body));
         StringBuilder sb = new StringBuilder();
         String line = "";
@@ -56,21 +53,21 @@ public class JSONHelper {
              }
         }
         try {
-            o  = parser.parse(sb.toString());
-        } catch (ParseException ex) {
+            obj = new JSONObject(sb.toString());
+        } catch (JSONException ex) {
         }
-        return (JSONObject)o;
+        return obj;
     }
     public static JSONObject convertToJson(Headers h)
     {
         JSONObject obj = new JSONObject();
-        Set<Map.Entry<String, List<String>>> params = 
+        Set<Map.Entry<String, List<String>>> params =
                 h.entrySet();
         for(Map.Entry<String, List<String>> part : params)
         {
             //For every value can contain an array of subvalues/keys
             JSONArray subValue = new JSONArray();
-            subValue.add(part.getValue());
+            subValue.put(part.getValue());
             obj.put(part.getKey(), subValue);
         }
         return obj;
@@ -78,7 +75,7 @@ public class JSONHelper {
     public static boolean checkSsl(JSONObject obj)
     {
         boolean retVal =  false;
-        if(obj.containsKey("Client-verify"))
+        if(obj.has("Client-verify"))
         {
             JSONArray values = (JSONArray) obj.get("Client-verify");
             LinkedList subValues = (LinkedList) values.get(0);
