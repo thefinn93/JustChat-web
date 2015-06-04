@@ -76,7 +76,7 @@ public class Channel {
             return "User not in channel";
         log.add(new Message(user,message,time));
         JSONObject actionUpdate = new JSONObject();
-        actionUpdate.put("action", "receiveMessage");
+        actionUpdate.put("action", "sendmsg");
         actionUpdate.put("username", userName);
         actionUpdate.put("channel", userName);
         actionUpdate.put("message", message);
