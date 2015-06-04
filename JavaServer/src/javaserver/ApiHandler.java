@@ -70,6 +70,8 @@ public class ApiHandler implements HttpHandler {
 
         if(username != null) {
           response.put("actions", JavaServer.chat.getUpdate(username));
+        } else {
+          System.out.println("username is null");
         }
 
         String responseString = response.toString();
