@@ -3,11 +3,8 @@
     <description>Builds the project.</description>
 	<mkdir dir="./build/classes/"/>
 	<mkdir dir="./dist/"/>
-	<get dest="./build/json-simple-1.1.1.jar" usetimestamp="true">
-		<url url="http://json-simple.googlecode.com/files/json-simple-1.1.1.jar"/>
-	</get>
   <get dest="./build/org.json.jar" usetimestamp="true">
-    <url url="http://central.maven.org/maven2/org/json/json/20141113/json-20141113.jar" />
+    <url url="http://central.maven.org/maven2/org/json/json/20140107/json-20140107.jar" />
   </get>
 	<javac srcdir="./src/javaserver/"
 		destdir="./build/classes/"
