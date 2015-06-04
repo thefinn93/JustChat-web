@@ -27,6 +27,7 @@ public class User {
     public JSONArray getActionsToTake()
     {
         JSONArray retVal = new JSONArray();
+        System.out.println("Action size: " + actions.size());
         for(int i = 0; i < actions.size(); i++)
         {
             retVal.add(i, actions.get(i).toString());
