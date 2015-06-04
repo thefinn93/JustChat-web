@@ -93,8 +93,10 @@ public class ApiHandler implements HttpHandler {
         }
         switch((String)request.get("action"))
         {
-            case "getmsg":
+            case "refresh":
                 response = JavaServer.chat.getUpdate(username);
+                response.put("success", true);
+                response.put("reason", "refreshed");
                 break;
             case "sendmsg":
                 response = sendMessage(request, username);
@@ -122,6 +124,7 @@ public class ApiHandler implements HttpHandler {
             String reason = JavaServer.chat.sendMessage((String)req.get("channel"), username, (String)req.get("message"));
             if( reason != null)
             {
+                response.put("actions", JavaServer.chat.getUpdate(username));
                 response.put("success",true);
                 response.put("reason", "joined channel");
             }
@@ -147,6 +150,7 @@ public class ApiHandler implements HttpHandler {
             String reason = JavaServer.chat.leaveChannel(user, (String)req.get("Channel"));
             if(reason != null)
             {
+                response.put("actions", JavaServer.chat.getUpdate(user));
                 response.put("success", true);
                 response.put("reason", "left channel");
             }
@@ -170,6 +174,7 @@ public class ApiHandler implements HttpHandler {
             String reason = JavaServer.chat.joinChannel(user, (String)req.get("channel"));
             if(reason == null)
             {
+                retVal.put("actions", JavaServer.chat.getUpdate(user));
                 retVal.put("success",true);
                 retVal.put("reason", "joined channel");
             }

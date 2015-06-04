@@ -83,10 +83,10 @@ public class ChatLogic {
     public JSONObject getUpdate(String user)
     {
         JSONObject retVal = new JSONObject();
-        retVal.put("action", "refresh");
-        retVal.put("success", false);
         if(user == null)
         {
+            retVal.put("action", "refresh");
+            retVal.put("success", false);
             retVal.put("reason", "User is null");
         }
         JSONArray messages = new JSONArray();
@@ -97,8 +97,6 @@ public class ChatLogic {
                 retVal.put("actions", current.getActionsToTake());
             }
         }
-        retVal.put("success", true);
-        retVal.put("reason", "got messages");
         return retVal;
     }
 }
