@@ -36,13 +36,6 @@ public class User {
     }
     private void emptyActions()
     {
-        try
-        {
-            for(int i = 0; i < actions.length(); i++)
-                actions.remove(i);
-        }
-        catch(Exception e)
-        {
-        }
+        actions = new JSONArray();
     }
 }
