@@ -53,7 +53,7 @@ public class Channel {
             return "User not in channel";
         if(users.contains(user))
             users.remove(user);
-        
+
         JSONObject actionUpdate = new JSONObject();
         actionUpdate.put("action", "leave");
         actionUpdate.put("username", userName);
@@ -71,7 +71,7 @@ public class Channel {
             return "User not in channel";
         if(whitelist != null && !whitelist.contains(user.USER_NAME))
             return "Not whitelisted";
-        
+
         if(!users.contains(user))
             return "User not in channel";
         log.add(new Message(user,message,time));
@@ -84,7 +84,7 @@ public class Channel {
         {
             current.addActionToTake(actionUpdate);
         }
-        System.out.println("[" + this.CHANNEL_NAME + "]<" + user + ">" + message);
+        System.out.println("[" + this.CHANNEL_NAME + "] <" + user.USER_NAME + "> " + message);
         return null;
     }
 }
