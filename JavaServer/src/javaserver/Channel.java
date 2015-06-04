@@ -57,14 +57,14 @@ public class Channel {
         }
         return retVal;
     }
-    public boolean addMessage(String user, String message, Date time)
+    public String addMessage(String user, String message, Date time)
     {
         if(whitelist != null && !whitelist.contains(user))
-            return false;
+            return "Not whitelisted";
         if(!users.contains(user))
-            return false;
+            return "User not in channel";
         log.add(new Message(user,message,time));
         System.out.println("[" + this.CHANNEL_NAME + "]<" + user + ">" + message);
-        return true;
+        return null;
     }
 }

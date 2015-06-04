@@ -119,13 +119,14 @@ public class ApiHandler implements HttpHandler {
         response.put("action","sendmsg");
         try
         {
-            if(JavaServer.chat.sendMessage((String)req.get("channel"), username, (String)req.get("message")))
+            String reason = JavaServer.chat.sendMessage((String)req.get("channel"), username, (String)req.get("message"));
+            if( reason != null)
             {
                 response.put("success",true);
             }
             else
             {
-                response.put("reason", "Failed to send message, no good reason provided");
+                response.put("reason", reason);
             }
         }
         catch(Exception e)

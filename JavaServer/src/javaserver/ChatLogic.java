@@ -41,11 +41,15 @@ public class ChatLogic {
         }
         return false;
     }
-    public boolean sendMessage(String channel, String user, String message)
+    public String sendMessage(String channel, String user, String message)
     {
         Date time = new Date();
-        if(channel == null || user == null || message == null || time == null)
-            return false;
+        if(channel == null)
+            return "Channel is null";
+        if(user == null)
+            return "User name is null";
+        if(message == null)
+            return "Message is null";
         for(Channel current : channels)
         {
             if(current.CHANNEL_NAME.equalsIgnoreCase(channel))
@@ -54,7 +58,7 @@ public class ChatLogic {
                 return current.addMessage(user, message, time);
             }
         }
-        return false;
+        return "No channel exists under that name";
     }
 
     public JSONObject getMessages(String user, Date time)
