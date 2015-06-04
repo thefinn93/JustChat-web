@@ -68,10 +68,10 @@ public class ApiHandler implements HttpHandler {
             response.put("reason", "Failed to switch action: " + e.toString());
         }
 
-        if(userName != null) {
-          response.put("actions", JavaServer.chat.getUpdate(userName));
-        } else {
+        if(userName == null) {
           System.out.println("username is null");
+        } else {
+          response.put("actions", JavaServer.chat.getUpdate(userName));
         }
 
         String responseString = response.toString();
@@ -97,7 +97,7 @@ public class ApiHandler implements HttpHandler {
             response.put("reason", "No action key");
             return response;
         }
-        switch((String)request.get("action"))
+        switch(request.getString("action"))
         {
             case "refresh":
                 response.put("success", true);
@@ -126,7 +126,7 @@ public class ApiHandler implements HttpHandler {
         response.put("reason", "Something bad happened in the sendMessage() function.");
         try
         {
-            String reason = JavaServer.chat.sendMessage((String)req.get("channel"), username, (String)req.get("message"));
+            String reason = JavaServer.chat.sendMessage(req.getString("channel"), username, req.getString("message"));
             if( reason != null)
             {
                 response.put("success", true);
@@ -152,7 +152,7 @@ public class ApiHandler implements HttpHandler {
         response.put("reason", "Unknown error in leaveChannel");
         try
         {
-            String reason = JavaServer.chat.leaveChannel(user, (String)req.get("Channel"));
+            String reason = JavaServer.chat.leaveChannel(user, req.getString("Channel"));
             if(reason != null)
             {
                 response.put("success", true);
@@ -175,7 +175,7 @@ public class ApiHandler implements HttpHandler {
                 retVal.put("action","join");
         try
         {
-            String reason = JavaServer.chat.joinChannel(user, (String)req.get("channel"));
+            String reason = JavaServer.chat.joinChannel(user, req.getString("channel"));
             if(reason == null)
             {
                 retVal.put("success",true);
