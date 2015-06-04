@@ -82,8 +82,7 @@ public class ChatLogic {
 
     public JSONArray getUpdate(String user)
     {
-        JSONArray retVal = null;
-        JSONArray messages = new JSONArray();
+        JSONArray retVal = new JSONArray();
         for(User current : glbUser)
         {
             if(current.USER_NAME.equalsIgnoreCase(user))
