@@ -83,13 +83,12 @@ public class ChatLogic {
     public JSONArray getUpdate(String user)
     {
         JSONArray retVal = new JSONArray();
+        System.out.println("Looking for " + user + " in our db of " + glbUser.size());
         for(User current : glbUser)
         {
             if(current.USER_NAME.equalsIgnoreCase(user))
             {
                 retVal = current.getActionsToTake();
-            } else {
-              System.out.println(current.USER_NAME + " != " + user);
             }
         }
         return retVal;
