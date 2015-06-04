@@ -30,7 +30,7 @@ public class User {
         System.out.println("Action size: " + actions.length());
         for(int i = 0; i < actions.length(); i++)
         {
-            retVal.put(i, actions.get(i).toString());
+            retVal.put(i, actions.get(i));
         }
         emptyActions();
         return retVal;
