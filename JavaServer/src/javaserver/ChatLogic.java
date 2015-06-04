@@ -50,7 +50,7 @@ public class ChatLogic {
         {
             if(current.CHANNEL_NAME.equalsIgnoreCase(channel))
             {
-                System.out.println(username + " sent to " + channel);
+                System.out.println(user + " sent to " + channel);
                 return current.addMessage(user, message, time);
             }
         }
