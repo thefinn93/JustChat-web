@@ -10,36 +10,55 @@ import org.json.simple.JSONObject;
  */
 public class ChatLogic {
     ArrayList<Channel> channels;
+    ArrayList<User> glbUser;
     ChatLogic()
     {
         channels = new ArrayList();
+        glbUser = new ArrayList();
     }
-    public boolean joinChannel(String user, String channel)
+    public String joinChannel(String user, String channel)
     {
-        if(channel == null || user == null)
-            return false;
+        if(channel == null)
+            return "channel is null";
+        if(user == null)
+            return "user is null";
+        User currentUser = null;
+        for(User current : glbUser)
+        {
+            if(current.USER_NAME.equalsIgnoreCase(user))
+            {
+                currentUser = current;
+                break;
+            }
+        }
+        if(currentUser == null)
+        {
+            currentUser = new User(user);
+            glbUser.add(currentUser);
+        }
         for(Channel current : channels)
         {
             if(current.CHANNEL_NAME.equalsIgnoreCase(channel))
             {
-                return current.joinChannel(user);
+                return current.joinChannel(currentUser);
             }
         }
         Channel newChan = new Channel(channel);
-        if(!newChan.joinChannel(user))
-            return false;
-        return channels.add(newChan);
+        channels.add(newChan);
+        return newChan.joinChannel(currentUser);
     }
-    public boolean leaveChannel(String user, String channel)
+    public String leaveChannel(String user, String channel)
     {
-        if(channel == null || user == null)
-            return false;
+        if(channel == null)
+            return "Channel is null";
+        if(user == null)
+            return "user is null";
         for(Channel current : channels)
         {
             if(current.CHANNEL_NAME.equalsIgnoreCase(channel))
                 return current.leaveChanneL(user);
         }
-        return false;
+        return "cannot find channel";
     }
     public String sendMessage(String channel, String user, String message)
     {
@@ -61,33 +80,25 @@ public class ChatLogic {
         return "No channel exists under that name";
     }
 
-    public JSONObject getMessages(String user, Date time)
+    public JSONObject getUpdate(String user)
     {
         JSONObject retVal = new JSONObject();
-        retVal.put("action", "getMessages");
-        if(user == null || time == null)
+        retVal.put("action", "refresh");
+        retVal.put("success", false);
+        if(user == null)
         {
-            retVal.put("success", false);
-            retVal.put("reason", "invalid getMessages input");
+            retVal.put("reason", "User is null");
         }
         JSONArray messages = new JSONArray();
-        for(Channel current : channels)
+        for(User current : glbUser)
         {
-            JSONObject val;
-            val = current.getMessages(user, time);
-            if(val != null)
-                messages.add(val);
+            if(current.USER_NAME.equalsIgnoreCase(user))
+            {
+                retVal.put("actions", current.getActionsToTake());
+            }
         }
-        if(messages.isEmpty())
-        {
-            retVal.put("success", false);
-            retVal.put("reason", "no messages");
-        }
-        else
-        {
-            retVal.put("success", true);
-            retVal.put("messages", messages);
-        }
+        retVal.put("success", true);
+        retVal.put("reason", "got messages");
         return retVal;
     }
 }

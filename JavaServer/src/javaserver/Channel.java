@@ -10,7 +10,7 @@ import org.json.simple.JSONObject;
  * @author Brad Minogue
  */
 public class Channel {
-    ArrayList<String> users;
+    ArrayList<User> users;
     //whitelist can be null
     ArrayList<String> whitelist;
     ArrayList<Message> log;
@@ -21,49 +21,69 @@ public class Channel {
         log = new ArrayList();
         users = new ArrayList();
     }
-    public boolean joinChannel(String user)
+    private User getUsr(String usr)
+    {
+        for(User current : users)
+        {
+            if(current.USER_NAME.equalsIgnoreCase(usr))
+                return current;
+        }
+        return null;
+    }
+    public String joinChannel(User user)
     {
         //potential whitelist implimentation support
-        if(whitelist != null && !whitelist.contains(user))
-            return false;
+        if(whitelist != null && !whitelist.contains(user.USER_NAME))
+            return "Not on whitelist";
         users.add(user);
-        return true;
+        JSONObject actionUpdate = new JSONObject();
+        actionUpdate.put("action", "join");
+        actionUpdate.put("username", user.USER_NAME);
+        actionUpdate.put("channel", this.CHANNEL_NAME);
+        for(User current : users)
+        {
+            current.addActionToTake(actionUpdate);
+        }
+        return null;
     }
-    public boolean leaveChanneL(String user)
+    public String leaveChanneL(String userName)
     {
+        User user = getUsr(userName);
+        if(user == null)
+            return "User not in channel";
         if(users.contains(user))
             users.remove(user);
-        return true;
-    }
-    public JSONObject getMessages(String user, Date time)
-    {
-        JSONObject retVal = new JSONObject();
-        retVal.put("channel", CHANNEL_NAME);
-        if(whitelist != null && whitelist.contains(user))
+        
+        JSONObject actionUpdate = new JSONObject();
+        actionUpdate.put("action", "leave");
+        actionUpdate.put("username", userName);
+        actionUpdate.put("channel", this.CHANNEL_NAME);
+        for(User current : users)
         {
-            JSONArray messages = new JSONArray();
-            for(Message current : log)
-            {
-                if(current.date.before(time))
-                    continue;
-                JSONObject crnt = new JSONObject();
-                crnt.put("user", current.user);
-                crnt.put("message", current.message);
-                crnt.put("timestamp", current.date);
-            }
-            if(messages.isEmpty())
-                return null;
-            retVal.put("messages", messages);
+            current.addActionToTake(actionUpdate);
         }
-        return retVal;
+        return null;
     }
-    public String addMessage(String user, String message, Date time)
+    public String addMessage(String userName, String message, Date time)
     {
-        if(whitelist != null && !whitelist.contains(user))
+        User user = getUsr(userName);
+        if(user == null)
+            return "User not in channel";
+        if(whitelist != null && !whitelist.contains(user.USER_NAME))
             return "Not whitelisted";
+        
         if(!users.contains(user))
             return "User not in channel";
         log.add(new Message(user,message,time));
+        JSONObject actionUpdate = new JSONObject();
+        actionUpdate.put("action", "sendmsg");
+        actionUpdate.put("username", userName);
+        actionUpdate.put("channel", userName);
+        actionUpdate.put("message", message);
+        for(User current : users)
+        {
+            current.addActionToTake(actionUpdate);
+        }
         System.out.println("[" + this.CHANNEL_NAME + "]<" + user + ">" + message);
         return null;
     }

@@ -6,10 +6,10 @@ import java.util.Date;
  * @author Brad Minogue
  */
 public class Message {
-    final String user;
+    final User user;
     final String message;
     final Date date;
-    Message(String usr, String msg, Date timeStamp)
+    Message(User usr, String msg, Date timeStamp)
     {
         user = usr;
         message = msg;
